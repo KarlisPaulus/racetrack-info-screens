@@ -1,0 +1,26 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beachside Racetrack</title>
+</head>
+<body>
+  <h1>Welcome to Beachside Racetrack!</h1>
+  <p>Real-time race system is a work in progress C:</p>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('connect', () => {
+      console.log('Connected to server with ID:', socket.id);
+    });
+
+	socket.on('message', (msg) => {
+    console.log('Message from server:', msg);
+  });
+  </script>
+</body>
+</html>

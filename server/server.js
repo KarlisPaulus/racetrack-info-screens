@@ -1,8 +1,9 @@
 // server/server.js
 const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
+const {Server} = require('socket.io');
 const dotenv = require('dotenv');
+const raceRoutes = require('./routes/routes');
 
 // Load environment variables
 dotenv.config();
@@ -24,6 +25,12 @@ const io = new Server(server);
 // Serve static files from the public folder
 app.use(express.static('public'));
 
+// Body parser middleware to parse JSON request bodies
+app.use(express.json());
+
+// Register raceRoutes
+app.use("/api", raceRoutes);
+
 // Basic route for testing
 app.get('/', (req, res) => {
   res.send('Beachside Racetrack System is running!');
@@ -33,7 +40,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
-	// Send a test message to the client (cant test socket.emit until we have the frontend working, so lets hope it works.)
+	// Send a test message to the client
 	socket.emit('message', 'Welcome to Beachside Racetrack!');
 
   socket.on('disconnect', () => {

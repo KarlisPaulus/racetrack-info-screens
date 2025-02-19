@@ -1,0 +1,67 @@
+/* 
+  This container is centered on screen (90% wide & tall),
+  then we use a grid of 8 equal rows (one for each car).
+*/
+#lapTimersContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -56%);
+    width: 90vw;       /* 90% of the viewport width */
+    height: 80vh;      /* 90% of the viewport height */
+    display: grid;
+    grid-template-rows: repeat(8, 1fr); /* 8 equal-height rows */
+    gap: 8px;
+    box-sizing: border-box;
+    background-color: #222;
+  }
+  
+  .carRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px; /* Space on the bottom/top, and sides of the button*/
+    color: #ccc;
+    font-size: 20px;
+    border: 1px solid #333;
+    box-sizing: border-box;
+  }
+  
+  .carButton {
+    width: 100px;
+    height: 50px;
+    font-size: 25px;
+    cursor: pointer;
+    background-color: #2D8C2D;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    /*transition: background-color 0.1s ease;*/
+  }.carButton:hover {
+        background-color: #36A336;
+   }
+   .carButton:active {
+        background-color: white;
+   }
+        
+
+  .endRaceButton {
+    background-color: rgb(220, 0, 0);
+    color: white;
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 4px;
+    border: none;
+    width: 150px;
+    height: 70px;
+    font-size: 25px;
+    cursor: pointer;
+  }.endRaceButton:hover {
+        background-color: red;
+        /*transition: background-color 0.1s ease;*/
+   }
+    .endRaceButton:active {
+        background-color: white;
+   }

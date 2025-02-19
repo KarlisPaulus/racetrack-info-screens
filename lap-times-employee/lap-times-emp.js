@@ -63,7 +63,7 @@ const endRaceButton = document.createElement('button'); // End race button
   endRaceButton.className = 'endRaceButton';
   document.body.appendChild(endRaceButton);
 endRaceButton.addEventListener('click', () =>{
-
+  // To be continued! :0
 });
 
 function formatLapTime(timeInMs) {

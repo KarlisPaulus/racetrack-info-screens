@@ -49,6 +49,44 @@ exports.getAllRaces = (req, res) => {
 	res.status(200).json(races);
 };
 
+exports.getRaceById = (req, res) => {
+	const race = races.find(r => r.id === parseInt(req.params.id));
+	if (!race) {
+		return res.status(404).json({message: "Race session not found."});
+	}
+	res.status(200).json(race);
+};
+
+exports.updateRace = (req, res) => {
+	const race = races.find(r => r.id === parseInt(req.params.id));
+	if (!race) {
+	  return res.status(404).json({ message: "Race session not found." });
+	}
+  
+	const { name, drivers: driverNames } = req.body;
+	// Update race name if provided
+	if (name) race.name = name;
+  
+	// Update drivers if provided
+	if (driverNames) {
+	  const raceDrivers = [];
+	  for (const driverName of driverNames) {
+		const driver = drivers.find(d => d.name === driverName); // Find driver by name
+		if (!driver) {
+		  return res.status(404).json({ message: `Driver ${driverName} not found.` });
+		}
+		if (raceDrivers.find(d => d.name === driver.name)) { // Ensure no duplicate drivers
+		  return res.status(400).json({ message: `Driver ${driverName} is already added to this race.` });
+		}
+		raceDrivers.push(driver); // Add the entire driver object to the race
+	  }
+	  // Update the race drivers list
+	  race.drivers = raceDrivers;
+	}
+  
+	res.status(200).json(race);
+  }; 
+
 exports.deleteRace = (req, res) => {
 	const index = races.findIndex(r => r.id === parseInt(req.params.id));
 	if (index === -1) {

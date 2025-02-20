@@ -1,12 +1,12 @@
-/* 
-  This container is centered on screen (90% wide & tall),
-  then we use a grid of 8 equal rows (one for each car).
-*/
+body {
+  background-color: #222;
+}
+
 #lapTimersContainer {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -56%);
+    transform: translate(-50%, -50%);
     width: 90vw;       /* 90% of the viewport width */
     height: 80vh;      /* 90% of the viewport height */
     display: grid;
@@ -49,7 +49,7 @@
     background-color: rgb(220, 0, 0);
     color: white;
     position: absolute;
-    top: 90%;
+    top: 95%;
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 4px;
@@ -65,3 +65,19 @@
     .endRaceButton:active {
         background-color: white;
    }
+
+.fullscreenButton{
+  width: 50px;
+  height: 50px;
+  background: url(assets/Fullscreen.png) no-repeat center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.exitFullscreenButton{
+  width: 50px;
+  height: 50px;
+  background: url(assets/exitFullscreen.png) no-repeat center center;
+  background-size: contain;
+  cursor: pointer;
+}

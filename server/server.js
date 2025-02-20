@@ -4,6 +4,9 @@ const http = require('http');
 const { Server } = require('socket.io');
 const dotenv = require('dotenv');
 
+// Race status default values
+let raceStatus = {running: false, mode: "Danger"};
+
 // Load environment variables
 dotenv.config();
 
@@ -23,6 +26,9 @@ const io = new Server(server);
 
 // Serve static files from the public folder
 app.use(express.static('public'));
+app.use(express.static('public/race-control'));
+
+app.set("io", io);
 
 // Basic route for testing
 app.get('/', (req, res) => {
@@ -35,6 +41,27 @@ io.on('connection', (socket) => {
 
 	// Send a test message to the client (cant test socket.emit until we have the frontend working, so lets hope it works.)
 	socket.emit('message', 'Welcome to Beachside Racetrack!');
+
+  // Send initial race status
+  socket.emit("raceUpdate", raceStatus);
+  
+  // Handle race start event
+  socket.on("start", () => {
+    raceStatus = {running: true, mode: "Safe"};
+    io.emit("raceUpdate", raceStatus);
+  });
+
+  // Real time race mode changes
+  socket.on("setRaceMode", (mode) => {
+    raceStatus.mode = mode;
+    io.emit("raceUpdate", raceStatus);  // Sends the update to all clients
+  });
+
+  // Handle race end event
+  socket.on("endRace", () => {
+    raceStatus = {running: false, mode: "Danger"};
+    io.emit("raceUpdate", raceStatus);
+  });
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);

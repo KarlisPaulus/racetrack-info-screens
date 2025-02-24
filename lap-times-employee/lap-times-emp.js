@@ -2,33 +2,6 @@ const lapTimersContainer = document.getElementById('lapTimersContainer');
 
 // store references to each row's time display <p> element
 const timeDisplays = [];
-document.body.backgroundColor = "black";
-
-const fullscreenButton = document.createElement('button'); // Add fullscreen button
-  fullscreenButton.className = "fullscreenButton";
-  fullscreenButton.addEventListener('click', () =>{ 
-    document.documentElement.requestFullscreen();
-  });
-document.body.appendChild(fullscreenButton); // Append
-
-const exitFullscreenButton = document.createElement('button'); // Add Exitfullscreen button
-  exitFullscreenButton.className = "exitFullscreenButton";
-  exitFullscreenButton.addEventListener('click', () => {
-    document.exitFullscreen();
-  })
-document.body.appendChild(exitFullscreenButton); // Append
-
-exitFullscreenButton.style.display = 'none'; // Hide exitButton
-
-document.addEventListener('fullscreenchange', () => {
-  if (document.fullscreenElement) { // Currently in fullscreen
-    fullscreenButton.style.display = 'none';
-    exitFullscreenButton.style.display = 'inline-block';
-  } else { // Not in fullscreen
-    fullscreenButton.style.display = 'inline-block';
-    exitFullscreenButton.style.display = 'none';
-  }
-});
 
   for (let i = 0; i < 8; i++) {
     // Create a row container
@@ -95,6 +68,17 @@ function lapTimer(event) { // Lap Timer
   }
 }
 
+function formatLapTime(timeInMs) {
+  const minutes = Math.floor(timeInMs / 60000);
+  const seconds = Math.floor((timeInMs % 60000) / 1000);
+  const milliseconds = timeInMs % 1000;
+
+  const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+  const formattedMilliseconds = milliseconds.toString().padStart(3, '0');
+
+  return `${minutes}:${formattedSeconds}:${formattedMilliseconds}`;
+}
+
 const endRaceButton = document.createElement('button'); // End race button
   endRaceButton.textContent = 'End Race';
   endRaceButton.className = 'endRaceButton';
@@ -110,13 +94,62 @@ endRaceButton.addEventListener('click', () =>{
     carButton.style.backgroundColor = "gray";
 }});
 
-function formatLapTime(timeInMs) {
-  const minutes = Math.floor(timeInMs / 60000);
-  const seconds = Math.floor((timeInMs % 60000) / 1000);
-  const milliseconds = timeInMs % 1000;
+const fullscreenButton = document.createElement('button'); // Add fullscreen button**********
+  fullscreenButton.className = "fullscreenButton";
+  fullscreenButton.addEventListener('click', () =>{ 
+    document.documentElement.requestFullscreen();
+  });
+document.body.appendChild(fullscreenButton); // Append
 
-  const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
-  const formattedMilliseconds = milliseconds.toString().padStart(3, '0');
+const exitFullscreenButton = document.createElement('button'); // Add Exitfullscreen button
+  exitFullscreenButton.className = "exitFullscreenButton";
+  exitFullscreenButton.addEventListener('click', () => {
+    document.exitFullscreen();
+  })
+document.body.appendChild(exitFullscreenButton); // Append
 
-  return `${minutes}:${formattedSeconds}:${formattedMilliseconds}`;
-}
+exitFullscreenButton.style.display = 'none'; // Hide exitButton
+
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement) { // Currently in fullscreen
+    fullscreenButton.style.display = 'none';
+    exitFullscreenButton.style.display = 'inline-block';
+  } else { // Not in fullscreen
+    fullscreenButton.style.display = 'inline-block';
+    exitFullscreenButton.style.display = 'none';
+  }
+});
+
+const darkModeButton = document.createElement('button'); // Create Darkmode Button
+  darkModeButton.className = "darkModeButton";
+
+  const lightModeButton = document.createElement('button'); // Create LightMode Button
+    lightModeButton.className = "lightModeButton";
+    lightModeButton.style.display = 'none';
+    
+darkModeButton.addEventListener('click', () =>{ // Switch to DarkMode
+    document.body.style.backgroundColor = "black";
+    lapTimersContainer.style.backgroundColor = "black";
+    const rows = lapTimersContainer.querySelectorAll('.carRow');
+    rows.forEach(row => {
+      row.style.backgroundColor = "rgb(43, 43, 43)";
+      row.style.color = "white";
+    });
+    darkModeButton.style.display = 'none'; // If switch to dark, remove Dark button
+    lightModeButton.style.display = 'inline-block'; // And add Light button
+});
+
+lightModeButton.addEventListener('click', () =>{ // Switch to LightMode
+    document.body.style.backgroundColor = "rgb(175, 175, 175)";
+    lapTimersContainer.style.backgroundColor = "rgb(175, 175, 175)";
+    const rows = lapTimersContainer.querySelectorAll('.carRow');
+    rows.forEach(row => {
+      row.style.backgroundColor = "white";
+      row.style.color = "#000000";
+    });
+    lightModeButton.style.display = 'none'; // If switch to light, remove Light button
+    darkModeButton.style.display = 'inline-block'; // And add Dark button
+});
+
+document.body.appendChild(darkModeButton); // Append buttons
+document.body.appendChild(lightModeButton);

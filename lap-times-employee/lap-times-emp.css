@@ -77,7 +77,7 @@ body {
   cursor: pointer;
 }
   .fullscreenButton:hover {
-    background-color: rgb(201, 201, 201);
+    background-color: rgb(143, 143, 143);
   }
   .fullscreenButton:active {
     background-color: white;
@@ -91,7 +91,7 @@ body {
   cursor: pointer;
 }
   .exitFullscreenButton:hover {
-    background-color: rgb(201, 201, 201);
+    background-color: rgb(143, 143, 143);
   }
   .exitFullscreenButton:active {
     background-color: white;
@@ -104,6 +104,12 @@ body {
   background-size: contain;
   cursor: pointer;
 }
+  .lightModeButton:hover {
+    background-color: rgb(143, 143, 143);
+  }
+  .lightModeButton:active {
+    background-color: white;
+  }
 
 .darkModeButton{
   width: 50px;
@@ -112,3 +118,9 @@ body {
   background-size: contain;
   cursor: pointer;
 }
+  .darkModeButton:hover {
+    background-color: rgb(143, 143, 143);
+  }
+  .darkModeButton:active {
+    background-color: white;
+  }

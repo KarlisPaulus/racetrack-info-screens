@@ -1,0 +1,40 @@
+body {
+    background: linear-gradient(135deg, #db8e1a, #b10058, rgb(94, 0, 160) 75%);
+    height: 100vh;
+    margin: 0;     display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.caption {
+    position: absolute;
+    top: 13%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bungee', cursive;
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    width: 53vw;
+    padding: 7px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6A0DAD, #FF007F, #ffbb56);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+
+.loginContainer {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35vw;
+    height: 60vh;
+    background-color: rgb(36, 36, 36);
+    display: block;
+    border-radius: 10px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+}

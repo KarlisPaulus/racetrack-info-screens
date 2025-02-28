@@ -3,9 +3,11 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const dotenv = require('dotenv');
+const { clearInterval } = require('timers');  // Module for timer functions
 
 // Race status default values
-let raceStatus = {running: false, mode: "Danger"};
+let raceStatus = {running: false, mode: "Danger", remainingTime: 0};
+let timerInterval = null;
 
 // Load environment variables
 dotenv.config();
@@ -44,23 +46,42 @@ io.on('connection', (socket) => {
 
   // Send initial race status
   socket.emit("raceUpdate", raceStatus);
-  
+
   // Handle race start event
   socket.on("start", () => {
-    raceStatus = {running: true, mode: "Safe"};
-    io.emit("raceUpdate", raceStatus);
+    if(!raceStatus.running) {
+    raceStatus = {running: true, mode: "Safe", remainingTime: process.env.TIMER_DURATION};
+
+      // Start timer
+      timerInterval = setInterval(() => {
+        raceStatus.remainingTime--;
+        io.emit("timerUpdate", raceStatus.remainingTime);
+
+        // Check if timer is finished
+        if (raceStatus.remainingTime <= 0) {
+          clearInterval(timerInterval); // Stop timer
+          raceStatus = {running: true, mode: "Finished", timerInterval: null};
+          io.emit("raceUpdate", raceStatus);  // Send real-time race update
+        }
+      }, 1000);
+      io.emit("raceUpdate", raceStatus);  // Send update that the race started
+    }
   });
 
   // Real time race mode changes
   socket.on("setRaceMode", (mode) => {
     raceStatus.mode = mode;
-    io.emit("raceUpdate", raceStatus);  // Sends the update to all clients
+    io.emit("raceUpdate", raceStatus);  // Send the update to all clients
   });
 
   // Handle race end event
   socket.on("endRace", () => {
-    raceStatus = {running: false, mode: "Danger"};
-    io.emit("raceUpdate", raceStatus);
+    if(timerInterval) {
+      clearInterval(timerInterval); // Stop timer if running
+      timerInterval = null;
+    }
+    raceStatus = {running: false, mode: "Danger", remainingTime: 0};
+    io.emit("raceUpdate", raceStatus);  // Send update that the race ended
   });
 
   socket.on('disconnect', () => {

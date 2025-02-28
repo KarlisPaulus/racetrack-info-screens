@@ -95,6 +95,13 @@ socket.on("raceUpdate", (data) => {
         nextRaceSess.remove();
         document.body.append(raceModes); 
         document.body.append(timer);
+
+        // Sets timer display to initial time
+        if (data.remainingTime === "600") {
+            timer.textContent = "10:00";
+        } else {
+            timer.textContent = "01:00";
+        }
     }
 
     // Case when end race is clicked, adds start race screen
@@ -118,6 +125,12 @@ socket.on("raceUpdate", (data) => {
         document.body.append(raceModes);
         document.body.append(timer);
     }
+
+    // Clear timer display when race is not running
+    if (data.remainingTime === 0 && !data.running) {
+        timer.textContent = "";
+    }
+
     // Update button colors
     raceModeColor(data.mode);
 });
@@ -131,25 +144,4 @@ socket.on("timerUpdate", (remainingTime) => {
     (minutes < 10 ? "0" + minutes : minutes) + ":" + 
     (seconds < 10 ? "0" + seconds : seconds);
     timer.textContent = formattedTime;
-});
-
-// Creates full screen button
-const fullScreenButton = document.createElement("div");
-fullScreenButton.classList.add("fullScreenButton");
-fullScreenButton.textContent = "Fullscreen";
-document.body.append(fullScreenButton);
-
-// Click event listener
-fullScreenButton.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-        fullScreenButton.style.display = "none";    // Hide button when in fullscreen
-    }
-});
-
-// Listen for fullscreen changes
-document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-        fullScreenButton.style.display = "block";  // Show button
-    }
 });

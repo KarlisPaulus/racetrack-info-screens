@@ -109,6 +109,7 @@ body {
     padding: 1.5vw;
     font-size: 20px;
     flex-direction: column-reverse;
+    font-size: 2vw;
 }
 
 .nextRaceSess {
@@ -117,16 +118,4 @@ body {
     border-radius: 40px;
     padding: 1.5vw;
     font-size: 20px;
-}
-
-.fullScreenButton {
-    position: fixed;
-    top: 2vh;
-    left: 2vw;
-    padding: 1vh 1vw;
-    border: 2px solid white;
-    border-radius: 5px;
-    background-color: black;
-    color: white;
-    cursor: pointer;
 }

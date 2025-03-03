@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    background-color: gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.timer {
+    font-size: 20vw;
+}
+
+.fullScreenButton {
+    position: fixed;
+    top: 2vh;
+    left: 2vw;
+    padding: 1vh 1vw;
+    border: 2px solid white;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    font-size: 2.5vw;
+}

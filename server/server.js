@@ -6,8 +6,9 @@ const dotenv = require('dotenv');
 const { clearInterval } = require('timers');  // Module for timer functions
 
 // Race status default values
-let raceStatus = {running: false, mode: "Danger", remainingTime: 0};
+const initialTime = process.env.TIMER_DURATION;
 let timerInterval = null;
+let raceStatus = {running: false, mode: "Danger", remainingTime: 0, timerDuration: initialTime};
 
 // Load environment variables
 dotenv.config();
@@ -29,6 +30,7 @@ const io = new Server(server);
 // Serve static files from the public folder
 app.use(express.static('public'));
 app.use(express.static('public/race-control'));
+app.use(express.static('public/race-countdown'));
 
 app.set("io", io);
 
@@ -50,7 +52,7 @@ io.on('connection', (socket) => {
   // Handle race start event
   socket.on("start", () => {
     if(!raceStatus.running) {
-    raceStatus = {running: true, mode: "Safe", remainingTime: process.env.TIMER_DURATION};
+    raceStatus = {running: true, mode: "Safe", remainingTime: initialTime, timerDuration: initialTime};
 
       // Start timer
       timerInterval = setInterval(() => {
@@ -71,6 +73,10 @@ io.on('connection', (socket) => {
   // Real time race mode changes
   socket.on("setRaceMode", (mode) => {
     raceStatus.mode = mode;
+    if (raceStatus.mode === "Finished") {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
     io.emit("raceUpdate", raceStatus);  // Send the update to all clients
   });
 
@@ -80,7 +86,7 @@ io.on('connection', (socket) => {
       clearInterval(timerInterval); // Stop timer if running
       timerInterval = null;
     }
-    raceStatus = {running: false, mode: "Danger", remainingTime: 0};
+    raceStatus = {running: false, mode: "Danger", remainingTime: 0, timerDuration: initialTime};
     io.emit("raceUpdate", raceStatus);  // Send update that the race ended
   });
 

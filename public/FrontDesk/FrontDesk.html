@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Desk - Race Management</title>
+    <link rel="stylesheet" href="FrontDesk.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Race Management</h1>
+
+    <section id="race-management">
+        <h2>Upcoming Races</h2>
+        <ul id="race-list"></ul>
+
+        <h2>Add New Race</h2>
+        <form id="race-form">
+            <input type="text" id="race-name" placeholder="Race Name" required>
+            <button type="submit">Add Race</button>
+        </form>
+    </section>
+
+    <!-- Pop-up for changing race name -->
+    <div id="change-name-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Change Race Name</h3>
+            <form id="change-name-form">
+                <input type="text" id="new-race-name" placeholder="New Race Name" required>
+                <button type="submit">Save</button>
+                <button type="button" id="cancel-change-name">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pop-up for adding a driver -->
+    <div id="add-driver-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Add Driver</h3>
+            <form id="add-driver-form">
+                <input type="text" id="driver-name" placeholder="Driver Name" required>
+                <input type="text" id="car-id" placeholder="Car ID" required>
+                <button type="submit">Add Driver</button>
+                <button type="button" id="cancel-add-driver">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pop-up for deleting a race -->
+    <div id="delete-race-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Delete Race</h3>
+            <p>Are you sure you want to delete this race?</p>
+            <button type="button" id="confirm-delete">Yes, Delete</button>
+            <button type="button" id="cancel-delete">Cancel</button>
+        </div>
+    </div>
+
+    <script src="FrontDesk.js"></script>
+</body>
+</html>

@@ -4,6 +4,10 @@ body {
     margin: 0;
     padding: 0;
     background-color: black;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-height: 100vh;
 }
 
 h1 {
@@ -13,14 +17,57 @@ h1 {
     color: #ffffff;
 }
 
+/* Main container for race managment and details */
+.main-container {
+	display: flex;
+	justify-content: space-between;
+	width: 90%;
+	max-width: 1200px;
+	margin: 20px auto;
+	gap: 20px;
+}
+
 /* Section styles */
 section {
-    margin: 20px auto;
-    padding: 20px;
+    margin: 20px;
     background-color: #000000;
+	border: 2px solid white;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
+    flex: 1;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+/* Upcoming Races section */
+#race-management {
+	width: 400px;
+	height: 600px;
+	overflow-y: auto;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Add New Race form */
+#race-form {
+    margin-top: auto;
+}
+
+/* Race list */
+#race-list {
+    list-style-type: none;
+    padding: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* Race Details section */
+#race-details {
+	width: 400px;
+	height: 600px;
+	flex-shrink: 0;
+	overflow-y: auto;
 }
 
 /* Button and form styles */
@@ -60,11 +107,7 @@ input:focus {
 #race-management h2 {
     font-size: 24px;
     color: #ffffff;
-}
-
-#race-list {
-    list-style-type: none;
-    padding: 0;
+	text-align: center;
 }
 
 #race-list li {
@@ -75,10 +118,47 @@ input:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
+	cursor: pointer;
+}
+
+#race-list li:hover {
+	background-color: #f0f0f0;
 }
 
 #race-list button {
     margin-left: 10px;
+}
+
+/* Race Details Section */
+#race-details h2 {
+    font-size: 24px;
+    color: #ffffff;
+	text-align: center;
+}
+
+#race-details-content {
+    color: #ffffff;
+}
+
+#race-details-drivers {
+    list-style-type: none;
+    padding: 0;
+}
+
+#race-details-drivers li {
+    padding: 2px;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #000000;
+}
+
+#race-details-drivers button {
+    margin-left: 10px;
+	flex-shrink: 0;
 }
 
 /* Modal styles */
@@ -112,10 +192,30 @@ input:focus {
 }
 
 /* Delete button styling */
-#race-list button.delete-btn {
+.delete-btn {
     background-color: #c21300;
 }
 
-#race-list button.delete-btn:hover {
+.delete-btn:hover {
+    background-color: #a01000;
+}
+
+/* Green button styling */
+.green-btn {
+    background-color: #00ad06 !important;
+    color: white;
+}
+
+.green-btn:hover {
+    background-color: #008f05 !important;
+}
+
+/* Style cancel buttons */
+button[type="button"] {
     background-color: #c21300;
+    color: white;
+}
+
+button[type="button"]:hover {
+    background-color: #a01000;
 }

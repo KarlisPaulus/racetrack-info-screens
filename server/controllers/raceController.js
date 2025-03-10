@@ -50,6 +50,11 @@ exports.getAllRaces = (req, res) => {
 	res.status(200).json(races);
 };
 
+// Function to get the list of races for Next-Race page
+exports.getRaces = () => {
+    return races;
+};
+
 // Request to get a race by Id
 exports.getRaceById = (req, res) => {
 	const race = races.find(r => r.id === parseInt(req.params.id));

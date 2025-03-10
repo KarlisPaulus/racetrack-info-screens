@@ -219,3 +219,14 @@ button[type="button"] {
 button[type="button"]:hover {
     background-color: #a01000;
 }
+
+/* Ensure text color is white for all elements in the NextRace page */
+#next-race-details,
+#next-race-details h2,
+#next-race-details p,
+#next-race-details span,
+#next-race-details h3,
+#next-race-details ul,
+#next-race-details li {
+    color: white !important;
+}

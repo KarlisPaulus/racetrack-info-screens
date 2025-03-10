@@ -27,8 +27,11 @@ const io = new Server(server);
 const raceController = require('./controllers/raceController');
 raceController.setIO(io);
 
-// Serve static files from the public/FrontDesk folder
-app.use(express.static(path.join(__dirname, '/../public/FrontDesk')));
+// Serve static files from the public folder
+app.use(express.static(path.join(__dirname, '/../public')));
+
+// Serve static files from the FrontDesk folder
+app.use('/FrontDesk', express.static(path.join(__dirname, '/../public/FrontDesk')));
 
 // Body parser middleware to parse JSON request bodies
 app.use(express.json());
@@ -36,38 +39,48 @@ app.use(express.json());
 // Register raceRoutes
 app.use("/api", raceRoutes);
 
-// Serve FrontDesk.html as the main page
+// Serve FrontDesk.html
 app.get('/front-desk', (req, res) => {
 	res.sendFile(path.join(__dirname, '/../public/FrontDesk/FrontDesk.html'));
   });
   
+// Serve NextRace.html
+app.get('/next-race', (req, res) => {
+    res.sendFile(path.join(__dirname, '/../public/NextRace/NextRace.html'));
+});
+
 // Socket.IO connection handler
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+  	console.log('A user connected:', socket.id);
 
 	// Send a test message to the client
 	socket.emit('message', 'Welcome to Beachside Racetrack!');
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-  });
+  	socket.on('disconnect', () => {
+    	console.log('User disconnected:', socket.id);
+  	});
 
-  // Listen for race updates
-  socket.on('updateRace', (race) => {
-    io.emit('raceUpdated', race);
-  });
+  	// Listen for race updates
+  	socket.on('updateRace', (race) => {
+    	io.emit('raceUpdated', race);
+  	});
 
-  // Listen for new race creation
-  socket.on('newRace', (race) => {
-    io.emit('raceCreated', race);
-  });
+  	// Listen for new race creation
+  	socket.on('newRace', (race) => {
+    	io.emit('raceCreated', race);
+  	});
 
-  // Listen for race deletion
-  socket.on('deleteRace', (raceId) => {
-    io.emit('raceDeleted', raceId);
-  });
+  	// Listen for race deletion
+  	socket.on('deleteRace', (raceId) => {
+    	io.emit('raceDeleted', raceId);
+  	});
+
+	// Listen for requests to get the list of races
+    socket.on('getRaces', () => {
+        const races = require('./controllers/raceController').getRaces();
+        socket.emit('racesList', races);
+    });
 });
-
 // Start the server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

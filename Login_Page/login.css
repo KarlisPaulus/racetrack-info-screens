@@ -1,3 +1,7 @@
+body {
+    background-color: black;
+  }
+
 body::before {
     content: "";
     position: fixed; /* Covers the entire screen */
@@ -50,7 +54,7 @@ body::before {
     box-sizing: border-box;
 }
 
-.lapTimer {
+.loginBut {
     font-family: 'Bungee', cursive;
     background-color: rgb(25, 25, 25);
     color: white; /* White text for contrast */
@@ -64,9 +68,13 @@ body::before {
     text-align: center;
     border-radius: 5px;
     cursor: pointer;
+}   .loginBut:hover{
+        background-color: rgb(40, 40, 40);
+}   .loginBut:active{
+        background-color: rgb(110, 110, 110);
 }
 
-.raceManagement {
+.guestBut {
     font-family: 'Bungee', cursive;
     background-color: rgb(25, 25, 25);
     color: white; /* White text for contrast */
@@ -79,9 +87,13 @@ body::before {
     text-align: center; /* Center the text */
     border-radius: 5px; /* Slight rounded corners */
     cursor: pointer;
+}   .guestBut:hover{
+        background-color: rgb(40, 40, 40);
+}   .guestBut:active{
+        background-color: rgb(110, 110, 110);
 }
 
-.raceControl {
+.driverBut {
     font-family: 'Bungee', cursive;
     background-color: rgb(25, 25, 25);
     color: white; /* White text for contrast */
@@ -94,9 +106,32 @@ body::before {
     text-align: center; /* Center the text */
     border-radius: 5px; /* Slight rounded corners */
     cursor: pointer;
+}   .driverBut:hover{
+        background-color: rgb(40, 40, 40);
+}   .driverBut:active{
+        background-color: rgb(110, 110, 110);
 }
 
-.spectator {
+.driverOpt {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr; /* 3 equal columns */
+    gap: 10px;                         /* Optional spacing between buttons */
+    width: 100%; 
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}
+
+.nextRace {
     font-family: 'Bungee', cursive;
     background-color: rgb(25, 25, 25);
     color: white; /* White text for contrast */
@@ -109,29 +144,46 @@ body::before {
     text-align: center; /* Center the text */
     border-radius: 5px; /* Slight rounded corners */
     cursor: pointer;
+}.nextRace:hover{
+        background-color: rgb(40, 40, 40);
+}.nextRace:active{
+        background-color: rgb(110, 110, 110);
 }
 
-.lapTimer:hover{
-    background-color: rgb(40, 40, 40);
+.raceCount {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}.raceCount:hover{
+        background-color: rgb(40, 40, 40);
+}.raceCount:active{
+        background-color: rgb(110, 110, 110);
 }
-.raceManagement:hover{
-    background-color: rgb(40, 40, 40);
-}
-.raceControl:hover{
-    background-color: rgb(40, 40, 40);
-}
-.spectator:hover{
-    background-color: rgb(40, 40, 40);
-}
-.lapTimer:active{
-    background-color: rgb(110, 110, 110);
-}
-.raceManagement:active{
-    background-color: rgb(110, 110, 110);
-}
-.raceControl:active{
-    background-color: rgb(110, 110, 110);
-}
-.spectator:active{
-    background-color: rgb(110, 110, 110);
+
+.raceFlags {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}.raceFlags:hover{
+        background-color: rgb(40, 40, 40);
+}.raceFlags:active{
+        background-color: rgb(110, 110, 110);
 }

@@ -86,7 +86,12 @@ io.on('connection', (socket) => {
           io.emit("raceUpdate", raceStatus);  // Send real-time race update
         }
       }, 1000);
-      io.emit("raceUpdate", raceStatus);  // Send update that the race started
+     io.emit("raceUpdate", raceStatus);  // Send update that the race started
+
+     // Delete the current race session
+     raceController.deleteCurrentRace();
+     // Inform clients that the race session has been deleted
+     io.emit("racesList", raceController.getRaces());
     }
   });
 

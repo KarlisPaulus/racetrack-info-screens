@@ -9,12 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Listen for race updates from the server
     socket.on('raceCreated', (race) => {
         console.log("Race created:", race);
-        renderNextRace(race);
+        socket.emit("getRaces");
     });
 
     socket.on('raceUpdated', (race) => {
         console.log("Race updated:", race);
-        renderNextRace(race);
+        socket.emit("getRaces");
     });
 
     socket.on('raceDeleted', (raceId) => {

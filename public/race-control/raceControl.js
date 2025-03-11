@@ -80,11 +80,6 @@ function raceModeColor(color) {
     }
 }
 
-// Next race session element..... To be continued
-const nextRaceSess = document.createElement("div");
-nextRaceSess.classList.add("nextRaceSession");
-nextRaceSess.textContent = "Next race session:";
-
 // Listens for updates from the server
 socket.on("raceUpdate", (data) => {  
     console.log(`Race mode updated to ${data.mode}, running: ${data.running}`);
@@ -145,3 +140,62 @@ socket.on("timerUpdate", (remainingTime) => {
     (seconds < 10 ? "0" + seconds : seconds);
     timer.textContent = formattedTime;
 });
+
+// Next race session element
+const nextRaceSess = document.createElement("div");
+nextRaceSess.classList.add("nextRaceSession");
+nextRaceSess.textContent = "Next race session:";
+
+// Next race session drivers
+const nextRaceDrivers = document.createElement("div");
+nextRaceDrivers.classList.add("nextRaceDrivers");
+nextRaceSess.appendChild(nextRaceDrivers);
+
+// Event listener for when a race is created
+socket.on('raceCreated', (race) => {
+    console.log("Race created:", race);
+    socket.emit("getRaces");    // Requests the list of races
+});
+
+// Event listener for when a race is updated
+socket.on("raceUpdated", (race) => {
+    console.log("Race updated:", race);
+    socket.emit("getRaces");
+});
+
+// Event listener for when a race is deleted
+socket.on("raceDeleted", (raceId) => {
+    console.log("Race deleted:", raceId);
+    socket.emit("getRaces");
+});
+
+// Event listener for receiving the list of races
+socket.on('racesList', (races) => {
+    console.log("Received races list:", races);
+
+    nextRaceSess.textContent = "Next race session:"; // Reset the header
+    nextRaceSess.appendChild(nextRaceDrivers);
+
+    // Check if there are any races in the list
+    if (races.length > 0) {
+        const nextRace = races[0];  // Get the first race
+        renderNextRace(nextRace);
+    } else {
+        nextRaceSess.textContent = "No upcoming races";
+    }
+});
+
+socket.emit("getRaces");
+
+// Render the next race details
+function renderNextRace(race) {
+    console.log("Rendering next race:", race);
+    nextRaceDrivers.innerHTML = ""; // Clear current list of drivers
+    
+    // Render drivers
+    race.drivers.forEach(driver => {
+        const li = document.createElement("li");
+        li.textContent = `${driver.name} - ${driver.carAssigned}`;
+        nextRaceDrivers.appendChild(li);
+    });
+}

@@ -165,3 +165,10 @@ exports.createDriverAndCar = (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
+
+// Deletes the current race
+exports.deleteCurrentRace = () => {
+  if (races.length > 0) {
+      races.shift();
+  }
+};

@@ -63,6 +63,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    socket.on('racesList', (races) => {
+        console.log("Received races list:", races);
+        renderRaces(races);
+        clearRaceDetails();
+    });
+    
+
 	// FUNCTIONS
 
     // Fetch all races

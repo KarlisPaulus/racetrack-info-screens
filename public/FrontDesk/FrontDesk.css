@@ -1,0 +1,232 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 36px;
+    color: #ffffff;
+}
+
+/* Main container for race managment and details */
+.main-container {
+	display: flex;
+	justify-content: space-between;
+	width: 90%;
+	max-width: 1200px;
+	margin: 20px auto;
+	gap: 20px;
+}
+
+/* Section styles */
+section {
+    margin: 20px;
+    background-color: #000000;
+	border: 2px solid white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+/* Upcoming Races section */
+#race-management {
+	width: 400px;
+	height: 600px;
+	overflow-y: auto;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Add New Race form */
+#race-form {
+    margin-top: auto;
+}
+
+/* Race list */
+#race-list {
+    list-style-type: none;
+    padding: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* Race Details section */
+#race-details {
+	width: 400px;
+	height: 600px;
+	flex-shrink: 0;
+	overflow-y: auto;
+}
+
+/* Button and form styles */
+button {
+    padding: 8px 16px;
+    background-color: #00ad06;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #00ad06;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #00ad06;
+}
+
+/* Race Management section styling */
+#race-management h2 {
+    font-size: 24px;
+    color: #ffffff;
+	text-align: center;
+}
+
+#race-list li {
+    padding: 8px;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	cursor: pointer;
+}
+
+#race-list li:hover {
+	background-color: #f0f0f0;
+}
+
+#race-list button {
+    margin-left: 10px;
+}
+
+/* Race Details Section */
+#race-details h2 {
+    font-size: 24px;
+    color: #ffffff;
+	text-align: center;
+}
+
+#race-details-content {
+    color: #ffffff;
+}
+
+#race-details-drivers {
+    list-style-type: none;
+    padding: 0;
+}
+
+#race-details-drivers li {
+    padding: 2px;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #000000;
+}
+
+#race-details-drivers button {
+    margin-left: 10px;
+	flex-shrink: 0;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+}
+
+.modal-content button {
+    margin-right: 10px;
+}
+
+/* Delete button styling */
+.delete-btn {
+    background-color: #c21300;
+}
+
+.delete-btn:hover {
+    background-color: #a01000;
+}
+
+/* Green button styling */
+.green-btn {
+    background-color: #00ad06 !important;
+    color: white;
+}
+
+.green-btn:hover {
+    background-color: #008f05 !important;
+}
+
+/* Style cancel buttons */
+button[type="button"] {
+    background-color: #c21300;
+    color: white;
+}
+
+button[type="button"]:hover {
+    background-color: #a01000;
+}
+
+/* Ensure text color is white for all elements in the NextRace page */
+#next-race-details,
+#next-race-details h2,
+#next-race-details p,
+#next-race-details span,
+#next-race-details h3,
+#next-race-details ul,
+#next-race-details li {
+    color: white !important;
+}

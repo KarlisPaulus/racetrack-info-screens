@@ -1,0 +1,120 @@
+body {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    background-color: gray;
+    height: 100vh;
+    margin: 0;
+    gap: 2vh;
+}
+
+.startRace {
+    position: relative;
+    display: flex;
+    border: 2px solid black;
+    border-radius: 40px;
+    padding: 1.5vw;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.endRace {
+    position: relative;
+    display: flex;
+    border: 2px solid black;
+    border-radius: 40px;
+    padding: 1.5vw;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.raceModes {
+    display: flex;
+    border: 3px solid black;
+    height: 30vh;
+    min-height: 200px;
+    max-height: 250px;
+    width: 50vw;
+    min-width: 400px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.safe {
+    display: flex;
+    width: 20%;
+    height: 20%;
+    border: 2px solid black;
+    border-radius: 40px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2vw;
+}
+.safe.active {
+    background-color: green;
+}
+
+.hazard {
+    display: flex;
+    width: 20%;
+    height: 20%;
+    border: 2px solid black;
+    border-radius: 40px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2vw;
+}
+.hazard.active {
+    background-color: yellow;
+}
+
+.danger {
+    display: flex;
+    width: 20%;
+    height: 20%;
+    border: 2px solid black;
+    border-radius: 40px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2vw;
+}
+.danger.active {
+    background-color: red;
+}
+
+.finish {
+    display: flex;
+    width: 20%;
+    height: 20%;
+    border: 2px solid black;
+    border-radius: 40px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2vw;
+}
+
+.timer {
+    display: flex;
+    border: 2px solid black;
+    border-radius: 40px;
+    padding: 1.5vw;
+    flex-direction: column-reverse;
+    font-size: 2vw;
+}
+
+.nextRaceSess {
+    display: flex;
+    border: 2px solid black;
+    border-radius: 40px;
+    padding: 1.5vw;
+    font-size: 20px;
+}

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js"
+    "start": "NODE_ENV=production TIMER_DURATION=600 node server/server.js",
+    "dev": "NODE_ENV=development TIMER_DURATION=60 node server/server.js"
   },
   "repository": {
     "type": "git",

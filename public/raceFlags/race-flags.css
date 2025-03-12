@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+}
+
+.flag {
+    width: 100vw;
+    height: 100vh;
+}
+
+.flag.finished {
+    background-image: repeating-conic-gradient(black 0% 25%, white 0% 50%);
+    background-size: 20vw 20vw;
+}
+
+.fullScreenButton {
+    position: fixed;
+    top: 2vh;
+    left: 2vw;
+    padding: 1vh 1vw;
+    border: 2px solid white;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+

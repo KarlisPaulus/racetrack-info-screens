@@ -35,8 +35,6 @@ raceController.setIO(io);
 
 // Serve static files from the public folder
 app.use(express.static(path.join(__dirname, '/../public')));
-app.use(express.static('public/race-control'));
-app.use(express.static('public/race-countdown'));
 
 app.set("io", io);
 
@@ -57,6 +55,21 @@ app.get('/front-desk', (req, res) => {
 // Serve NextRace.html
 app.get('/next-race', (req, res) => {
     res.sendFile(path.join(__dirname, '/../public/NextRace/NextRace.html'));
+});
+
+// Serve RaceControl.html
+app.get('/race-control', (req, res) => {
+  res.sendFile(path.join(__dirname, '/../public/raceControl/raceControl.html'));
+});
+
+// Serve race-countdown.html
+app.get('/race-countdown', (req, res) => {
+  res.sendFile(path.join(__dirname, '/../public/raceCountdown/race-countdown.html'));
+});
+
+// Serve race-flags.html
+app.get('/race-flags', (req, res) => {
+  res.sendFile(path.join(__dirname, '/../public/raceFlags/race-flags.html'));
 });
 
 // Socket.IO connection handler

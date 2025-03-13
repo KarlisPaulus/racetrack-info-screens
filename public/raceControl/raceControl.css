@@ -17,6 +17,7 @@ body {
     padding: 1.5vw;
     font-size: 20px;
     cursor: pointer;
+    background-color: gray;
 }
 
 .endRace {

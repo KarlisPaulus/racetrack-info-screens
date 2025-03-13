@@ -10,7 +10,7 @@ const timer = document.createElement("div");
 timer.classList.add("timer");
 
 // Start race button
-const startRaceButton = document.createElement("div");
+const startRaceButton = document.createElement("button");
 startRaceButton.classList.add("startRace");
 startRaceButton.textContent = "Start Race";
 startRaceButton.addEventListener("click", () => {
@@ -110,7 +110,6 @@ socket.on("raceUpdate", (data) => {
     else if (data.mode === "Finished") {
         timer.remove();
         raceModes.remove();
-        startRaceButton.remove();
         nextRaceSess.remove();
         document.body.append(endRaceButton);
     }
@@ -144,7 +143,6 @@ socket.on("timerUpdate", (remainingTime) => {
 // Next race session element
 const nextRaceSess = document.createElement("div");
 nextRaceSess.classList.add("nextRaceSession");
-nextRaceSess.textContent = "Next race session:";
 
 // Next race session drivers
 const nextRaceDrivers = document.createElement("div");
@@ -172,15 +170,16 @@ socket.on("raceDeleted", (raceId) => {
 // Event listener for receiving the list of races
 socket.on('racesList', (races) => {
     console.log("Received races list:", races);
-
-    nextRaceSess.textContent = "Next race session:"; // Reset the header
-    nextRaceSess.appendChild(nextRaceDrivers);
+    const nextRace = races[0];  // Get the first race
 
     // Check if there are any races in the list
-    if (races.length > 0) {
-        const nextRace = races[0];  // Get the first race
-        renderNextRace(nextRace);
+    if (races.length > 0 && nextRace.drivers.length > 0) {
+            renderNextRace(nextRace);
+            startRaceButton.disabled = false;
+            nextRaceSess.textContent = "Next race session:"; // Reset the header
+            nextRaceSess.appendChild(nextRaceDrivers);
     } else {
+        startRaceButton.disabled = true;
         nextRaceSess.textContent = "No upcoming races";
     }
 });

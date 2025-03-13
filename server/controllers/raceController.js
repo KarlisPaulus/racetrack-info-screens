@@ -129,7 +129,11 @@ exports.deleteRace = (req, res) => {
     const index = races.findIndex(r => r.id === raceId);
     if (index === -1) {
         console.error("Race not found:", raceId);
-        return res.status(404).json({ message: "Race not found." });
+		if (res) {
+        	return res.status(404).json({ message: "Race not found." });
+		} else {
+			return; // If res is not provided, just return
+		}
     }
 
     races.splice(index, 1); // Remove the race from the array
@@ -138,8 +142,10 @@ exports.deleteRace = (req, res) => {
     if (io) {
         io.emit('racesList', races.filter(r => !r.active)); // Only emit inactive races
     }
-	// Send a success response back to the client
-    res.status(200).json({ message: "Race deleted successfully." });
+	// Send a success response back to the client if response is provided
+	if(res) {
+    	res.status(200).json({ message: "Race deleted successfully." });
+	}
 };
 
 // Request to create a driver and assign a car

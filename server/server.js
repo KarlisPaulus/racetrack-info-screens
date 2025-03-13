@@ -152,7 +152,11 @@ io.on('connection', (socket) => {
     const activeRace = raceController.getActiveRace();
     if (activeRace) {
         const raceId = activeRace.id; // Get the raceId
-        raceController.deleteRace(raceId); // Pass the raceId to deleteRace
+        
+		// Use raceController to delete the race
+        raceController.deleteRace({ params: { id: raceId } }, {
+            status: (code) => ({ json: (data) => console.log(data) }) // Mock response object
+        });
     }
 
     // Emit the updated race status and races list

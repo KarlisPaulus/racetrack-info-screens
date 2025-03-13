@@ -59,17 +59,32 @@ app.get('/next-race', (req, res) => {
 
 // Serve RaceControl.html
 app.get('/race-control', (req, res) => {
-  res.sendFile(path.join(__dirname, '/../public/raceControl/raceControl.html'));
+  	res.sendFile(path.join(__dirname, '/../public/raceControl/raceControl.html'));
 });
 
 // Serve race-countdown.html
 app.get('/race-countdown', (req, res) => {
-  res.sendFile(path.join(__dirname, '/../public/raceCountdown/race-countdown.html'));
+  	res.sendFile(path.join(__dirname, '/../public/raceCountdown/race-countdown.html'));
 });
 
 // Serve race-flags.html
 app.get('/race-flags', (req, res) => {
-  res.sendFile(path.join(__dirname, '/../public/raceFlags/race-flags.html'));
+  	res.sendFile(path.join(__dirname, '/../public/raceFlags/race-flags.html'));
+});
+
+// Serve lap-line-tracker.html
+app.get('/lap-line-tracker', (req, res) => {
+	res.sendFile(path.join(__dirname, '/../public/lap-times-employee/lap-times-emp.html'));
+});
+
+// Fetch active race ID
+app.get('/api/races/active', (req, res) => {
+	const activeRace = raceController.getActiveRace();
+	if (activeRace) {
+	  	res.status(200).json({ activeRaceId: activeRace.id });
+	} else {
+	  	res.status(404).json({ message: "No active race found." });
+	}
 });
 
 // Socket.IO connection handler
@@ -99,13 +114,20 @@ io.on('connection', (socket) => {
           io.emit("raceUpdate", raceStatus);  // Send real-time race update
         }
       }, 1000);
-     io.emit("raceUpdate", raceStatus);  // Send update that the race started
 
-     // Delete the current race session
-     raceController.deleteCurrentRace();
-     // Inform clients that the race session has been deleted
-     io.emit("racesList", raceController.getRaces());
-    }
+     	io.emit("raceUpdate", raceStatus);  // Send update that the race started
+
+    	 // Mark the current race as active
+    	const activeRace = raceController.startRace();
+
+    	// Broadcast the active race ID
+        if (activeRace) {
+            io.emit("activeRaceId", activeRace.id); // Send the active race ID to all clients
+        }
+
+        // Inform clients that the race session has started
+        io.emit("racesList", raceController.getRaces());
+  	}
   });
 
   // Real time race mode changes
@@ -125,7 +147,17 @@ io.on('connection', (socket) => {
       timerInterval = null;
     }
     raceStatus = {running: false, mode: "Danger", remainingTime: 0, timerDuration: initialTime};
-    io.emit("raceUpdate", raceStatus);  // Send update that the race ended
+
+	// Get the active race
+    const activeRace = raceController.getActiveRace();
+    if (activeRace) {
+        const raceId = activeRace.id; // Get the raceId
+        raceController.deleteRace(raceId); // Pass the raceId to deleteRace
+    }
+
+    // Emit the updated race status and races list
+    io.emit("raceUpdate", raceStatus);
+    io.emit("racesList", raceController.getRaces()); // Emit the updated list of races
   });
 
   	socket.on('disconnect', () => {

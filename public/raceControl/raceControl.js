@@ -13,6 +13,7 @@ timer.classList.add("timer");
 const startRaceButton = document.createElement("button");
 startRaceButton.classList.add("startRace");
 startRaceButton.textContent = "Start Race";
+startRaceButton.disabled = true; // Disable the button by default
 startRaceButton.addEventListener("click", () => {
     socket.emit("start");   // sends to server
 });
@@ -152,6 +153,7 @@ nextRaceSess.appendChild(nextRaceDrivers);
 // Event listener for when a race is created
 socket.on('raceCreated', (race) => {
     console.log("Race created:", race);
+	startRaceButton.disabled = false; // Enable the Start Race button
     socket.emit("getRaces");    // Requests the list of races
 });
 
@@ -165,6 +167,10 @@ socket.on("raceUpdated", (race) => {
 socket.on("raceDeleted", (raceId) => {
     console.log("Race deleted:", raceId);
     socket.emit("getRaces");
+	// Disable the Start Race button if no races are left
+    if (races.length === 0) {
+        startRaceButton.disabled = true;
+    }
 });
 
 // Event listener for receiving the list of races

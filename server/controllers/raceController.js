@@ -30,7 +30,8 @@ exports.createRace = (req, res) => {
   const newRace = {
     id: races.length + 1,
     name,
-    drivers
+    drivers,
+	active: false // Mark the race as inactive by default
   };
 
   races.push(newRace);
@@ -38,6 +39,7 @@ exports.createRace = (req, res) => {
   // Emit the new race to all clients
   if (io) {
     io.emit('raceCreated', newRace);
+	io.emit('racesList', races.filter(r => !r.active)); // Emit only inactive races
   } else {
     console.error("Socket.IO instance (io) is not initialized.");
   }
@@ -47,12 +49,31 @@ exports.createRace = (req, res) => {
 
 // Request to get all races
 exports.getAllRaces = (req, res) => {
-	res.status(200).json(races);
+	res.status(200).json(races.filter(r => !r.active));
+};
+
+// Mark the current race as active
+exports.startRace = () => {
+    if (races.length > 0) {
+        const race = races[0]; // Get the first race
+        race.active = true; // Mark the race as active
+
+        // Remove the active race from the upcoming races list
+        const updatedRaces = races.filter(r => !r.active);
+
+        // Emit the updated races list to all clients
+        if (io) {
+            io.emit('racesList', updatedRaces);
+        }
+
+        return race; // Return the active race
+    }
+    return null; // Return null if no races exist
 };
 
 // Function to get the list of races for Next-Race page
 exports.getRaces = () => {
-    return races;
+    return races.filter(r => !r.active); // Only return inactive races
 };
 
 // Request to get a race by Id
@@ -99,14 +120,23 @@ exports.updateRace = (req, res) => {
 
 // Request to delete a race
 exports.deleteRace = (req, res) => {
-	const index = races.findIndex(r => r.id === parseInt(req.params.id));
-	if (index === -1) {
-		return res.status(404).json({message: "Race session not found."});
-	}
-	const deletedRaceId = races[index].id;
-	races.splice(index, 1);
-	io.emit('raceDeleted', deletedRaceId);
-	res.status(204).send();
+	const raceId = parseInt(req.params.id); // Get the race ID from the request parameters
+    console.log("Deleting race with ID:", raceId); // Debug log
+
+    const index = races.findIndex(r => r.id === raceId);
+    if (index === -1) {
+        console.error("Race not found:", raceId);
+        return res.status(404).json({ message: "Race not found." });
+    }
+
+    races.splice(index, 1); // Remove the race from the array
+
+    // Emit the updated list of races to all clients
+    if (io) {
+        io.emit('racesList', races.filter(r => !r.active)); // Only emit inactive races
+    }
+	// Send a success response back to the client
+    res.status(200).json({ message: "Race deleted successfully." });
 };
 
 // Request to create a driver and assign a car
@@ -166,9 +196,37 @@ exports.createDriverAndCar = (req, res) => {
     }
 };
 
-// Deletes the current race
-exports.deleteCurrentRace = () => {
-  if (races.length > 0) {
-      races.shift();
-  }
+// Request to save lap time
+exports.saveLapTime = (req, res) => {
+	const raceId = parseInt(req.params.id);
+	const { carNumber, lapTime, formattedLap, bestLap, formattedBest } = req.body;
+  
+	const race = races.find(r => r.id === raceId);
+	if (!race) {
+	  return res.status(404).json({ message: "Race session not found." });
+	}
+  
+	// Find the driver by car number
+	const driver = race.drivers.find(d => d.carAssigned === `Car ${carNumber}`);
+	if (!driver) {
+	  return res.status(404).json({ message: "Driver not found." });
+	}
+  
+	// Save lap time data
+	if (!driver.lapTimes) {
+	  driver.lapTimes = [];
+	}
+	driver.lapTimes.push({ lapTime, formattedLap, bestLap, formattedBest });
+  
+	// Emit the updated race to all clients
+	if (io) {
+	  io.emit('raceUpdated', race);
+	}
+  
+	res.status(200).json({ message: "Lap time saved successfully.", race });
+  };
+  
+// Function to get the active race
+exports.getActiveRace = () => {
+    return races.find(race => race.active); // Return the active race
 };

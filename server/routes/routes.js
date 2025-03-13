@@ -12,4 +12,7 @@ router.put("/races/:id", raceController.updateRace);
 // Create Driver and Assign Car
 router.post("/races/:id/create-driver", raceController.createDriverAndCar);
 
+// Save Lap Time
+router.post("/races/:id/save-lap-time", raceController.saveLapTime);
+
 module.exports = router;

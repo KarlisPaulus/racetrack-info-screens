@@ -51,6 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     socket.on('raceUpdated', (race) => {
         console.log("Race updated:", race);
+		if (selectedRaceId === race.id) {
+			showRaceDetails(race.id); // Refresh the Race Details section
+		}
         fetchRaces();
     });
 
@@ -248,6 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             if (!response.ok) throw new Error("Failed to update race name.");
             fetchRaces(); // Refresh the race list
+			showRaceDetails(selectedRaceId); // Refresh the Race Details section
             closeModals();
         } catch (error) {
             console.error("Error updating race name:", error);

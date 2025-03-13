@@ -92,23 +92,26 @@ exports.updateRace = (req, res) => {
 	  return res.status(404).json({ message: "Race session not found." });
 	}
   
-	const {name, drivers = []} = req.body;
+	const {name, drivers} = req.body;
 
 	// Update race name if provided
-	if (name) race.name = name;
+	if (name) {
+        race.name = name;
+    }
   
-	
-    if (drivers.length > 8) {
-        return res.status(400).json({ message: "A race session can have a maximum of 8 drivers." });
-    }
+	if (drivers) {
+    	if (drivers.length > 8) {
+    	    return res.status(400).json({ message: "A race session can have a maximum of 8 drivers." });
+    	}
 
-    // Validate Drivers
-    const driverNames = drivers.map(driver => driver.name);
-    if (new Set(driverNames).size !== driverNames.length) {
-        return res.status(400).json({ message: "Driver names must be unique within the race." });
-    }
+    	// Validate Drivers
+    	const driverNames = drivers.map(driver => driver.name);
+    	if (new Set(driverNames).size !== driverNames.length) {
+    	    return res.status(400).json({ message: "Driver names must be unique within the race." });
+    	}
 
-    race.drivers = drivers;
+    	race.drivers = drivers;
+	}
 
 	 // Emit the updated race to all clients
     if (io) {

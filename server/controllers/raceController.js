@@ -119,13 +119,14 @@ exports.updateRace = (req, res) => {
   }; 
 
 // Request to delete a race
-exports.deleteRace = (raceId) => {
+exports.deleteRace = (req, res) => {
+	const raceId = parseInt(req.params.id); // Get the race ID from the request parameters
     console.log("Deleting race with ID:", raceId); // Debug log
 
     const index = races.findIndex(r => r.id === raceId);
     if (index === -1) {
         console.error("Race not found:", raceId);
-        return;
+        return res.status(404).json({ message: "Race not found." });
     }
 
     races.splice(index, 1); // Remove the race from the array
@@ -134,6 +135,8 @@ exports.deleteRace = (raceId) => {
     if (io) {
         io.emit('racesList', races.filter(r => !r.active)); // Only emit inactive races
     }
+	// Send a success response back to the client
+    res.status(200).json({ message: "Race deleted successfully." });
 };
 
 // Request to create a driver and assign a car

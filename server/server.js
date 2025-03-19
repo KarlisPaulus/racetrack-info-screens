@@ -11,6 +11,7 @@ const { clearInterval } = require('timers');  // Module for timer functions
 const initialTime = process.env.TIMER_DURATION;
 let timerInterval = null;
 let raceStatus = {running: false, mode: "Danger", remainingTime: 0, timerDuration: initialTime};
+let startedRace = null;
 
 // Load environment variables
 dotenv.config();
@@ -97,6 +98,8 @@ io.on('connection', (socket) => {
   // Send initial race status
   socket.emit("raceUpdate", raceStatus);
 
+  socket.emit("activeRace", startedRace);
+
   // Handle race start event
   socket.on("start", () => {
     if(!raceStatus.running) {
@@ -110,7 +113,7 @@ io.on('connection', (socket) => {
         // Check if timer is finished
         if (raceStatus.remainingTime <= 0) {
           clearInterval(timerInterval); // Stop timer
-          raceStatus = {running: true, mode: "Finished", timerInterval: null};
+          raceStatus = {running: true, mode: "Finished", timerDuration: initialTime, timerInterval: null};
           io.emit("raceUpdate", raceStatus);  // Send real-time race update
         }
       }, 1000);
@@ -118,11 +121,11 @@ io.on('connection', (socket) => {
      	io.emit("raceUpdate", raceStatus);  // Send update that the race started
 
     	 // Mark the current race as active
-    	const activeRace = raceController.startRace();
+    	  startedRace = raceController.startRace();
 
-    	// Broadcast the active race ID
-        if (activeRace) {
-            io.emit("activeRaceId", activeRace.id); // Send the active race ID to all clients
+    	// Broadcast the active race
+        if (startedRace) {
+            io.emit("activeRace", startedRace); // Send the active race to all clients
         }
 
         // Inform clients that the race session has started
@@ -159,9 +162,10 @@ io.on('connection', (socket) => {
         });
     }
 
-    // Emit the updated race status and races list
+    startedRace = null;
+
+    // Emit the updated race status
     io.emit("raceUpdate", raceStatus);
-    io.emit("racesList", raceController.getRaces()); // Emit the updated list of races
   });
 
   	socket.on('disconnect', () => {

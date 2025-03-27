@@ -137,11 +137,6 @@ app.get('/race-control', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/raceControl/raceControl.html'));
 });
 
-// Serve race-flags.html
-app.get('/race-flags', requireAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, '/../public/raceFlags/race-flags.html'));
-});
-
 // Serve lap-line-tracker.html
 app.get('/lap-line-tracker', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/lap-times-employee/lap-times-emp.html'));
@@ -161,11 +156,15 @@ app.get('/race-countdown', (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/raceCountdown/race-countdown.html'));
 });
 
-// Serve leader-board
+// Serve leader-board.html
 app.get('/leader-board', (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/Spectator/leader-board.html'));
 });
 
+// Serve race-flags.html
+app.get('/race-flags', (req, res) => {
+  res.sendFile(path.join(__dirname, '/../public/raceFlags/race-flags.html'));
+});
 
 // Register raceRoutes
 app.use("/api", raceRoutes);

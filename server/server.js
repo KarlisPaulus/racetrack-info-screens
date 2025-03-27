@@ -139,7 +139,7 @@ app.get('/race-control', requireAuth, (req, res) => {
 
 // Serve lap-line-tracker.html
 app.get('/lap-line-tracker', requireAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, '/../public/lap-times-employee/lap-times-emp.html'));
+  res.sendFile(path.join(__dirname, '/../public/lap-line-tracker/lap-line-tracker.html'));
 });
 
 

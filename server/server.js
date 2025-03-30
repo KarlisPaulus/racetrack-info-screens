@@ -78,6 +78,11 @@ app.get('/lap-line-tracker', (req, res) => {
 	res.sendFile(path.join(__dirname, '/../public/lap-times-employee/lap-times-emp.html'));
 });
 
+// Serve leader-board.html
+app.get('/leader-board', (req, res) => {
+    res.sendFile(path.join(__dirname, '/../public/Leaderboard/leader-board.html'));
+});
+
 // Fetch active race ID
 app.get('/api/races/active', (req, res) => {
 	const activeRace = raceController.getActiveRace();
@@ -192,6 +197,48 @@ io.on('connection', (socket) => {
         const races = require('./controllers/raceController').getRaces();
         socket.emit('racesList', races);
     });
+
+	socket.on('saveLapTime', (lapData) => {
+		console.log('Received lap:', {
+			car: lapData.carNumber,
+			count: lapData.lapCount,
+			type: typeof lapData.lapCount
+		});
+		
+		// Convert carNumber to number
+		const carNumber = typeof lapData.carNumber === 'string' ? 
+			parseInt(lapData.carNumber.replace('Car ', '')) : 
+			lapData.carNumber;
+	
+		const race = raceController.getActiveRace();
+		if (race) {
+			const driver = race.drivers.find(d => {
+				const driverCarNum = parseInt(d.carAssigned.replace('Car ', ''));
+				return driverCarNum === carNumber;
+			});
+			
+			if (driver) {
+				if (!driver.lapTimes) driver.lapTimes = [];
+				driver.lapTimes.push({
+					lapTime: lapData.lapTime,
+					formattedLap: lapData.formattedLap,
+					bestLap: lapData.bestLap,
+					formattedBest: lapData.formattedBest,
+					lapCount: Number(lapData.lapCount) // Ensure stored as number
+				});
+				
+				// Emit updates
+				io.emit('lapTimeUpdate', {
+					carNumber: carNumber,
+					lapTime: lapData.lapTime,
+					lapCount: Number(lapData.lapCount), // Ensure number
+					bestLap: lapData.bestLap,
+					formattedLap: lapData.formattedLap,
+					formattedBest: lapData.formattedBest
+				});
+			}
+		}
+	});
 });
 // Start the server
 const PORT = process.env.PORT || 3000;

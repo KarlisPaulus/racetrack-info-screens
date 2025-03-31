@@ -1,0 +1,189 @@
+body {
+    background-color: black;
+  }
+
+body::before {
+    content: "";
+    position: fixed; /* Covers the entire screen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('assets/background.jpg') center/cover no-repeat; /* Background image */
+    filter: blur(5px); /* Adjust blur strength */
+    z-index: -1; /* Keeps it behind all content */
+}
+
+.caption {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bungee', cursive;
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    width: 53vw;
+    padding: 7px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    /*background: linear-gradient(135deg, #1A78DB, #DB8E1A, #FFD700); /* Updated to match background */
+     
+    /* V1 Colors: */ 
+    /*background: linear-gradient(135deg, #6A0DAD, #FF007F, #ffbb56);
+    /* Decide later which looks better */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.loginContainer {
+    position: absolute;
+    top: 57%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22vw;
+    height: 45vh;
+    background-color: rgb(36, 36, 36);
+    border-radius: 10px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    display: grid;
+    grid-template-rows: auto; /* Add rows dynamically. box grows by itself with more rows */
+    gap: 13px;
+    box-sizing: border-box;
+}
+
+.loginBut {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;    
+    
+    width: 100%; /* Make it span the container width */
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+}   .loginBut:hover{
+        background-color: rgb(40, 40, 40);
+}   .loginBut:active{
+        background-color: rgb(110, 110, 110);
+}
+
+.guestBut {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}   .guestBut:hover{
+        background-color: rgb(40, 40, 40);
+}   .guestBut:active{
+        background-color: rgb(110, 110, 110);
+}
+
+.driverBut {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}   .driverBut:hover{
+        background-color: rgb(40, 40, 40);
+}   .driverBut:active{
+        background-color: rgb(110, 110, 110);
+}
+
+.driverOpt {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr; /* 3 equal columns */
+    gap: 10px;                         /* Optional spacing between buttons */
+    width: 100%; 
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}
+
+.nextRace {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}.nextRace:hover{
+        background-color: rgb(40, 40, 40);
+}.nextRace:active{
+        background-color: rgb(110, 110, 110);
+}
+
+.raceCount {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}.raceCount:hover{
+        background-color: rgb(40, 40, 40);
+}.raceCount:active{
+        background-color: rgb(110, 110, 110);
+}
+
+.raceFlags {
+    font-family: 'Bungee', cursive;
+    background-color: rgb(25, 25, 25);
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Adjust font size */
+    border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
+    border-left: none;
+    border-right: none;
+    width: 100%; /* Make it span the container width */
+    text-align: center; /* Center the text */
+    border-radius: 5px; /* Slight rounded corners */
+    cursor: pointer;
+}.raceFlags:hover{
+        background-color: rgb(40, 40, 40);
+}.raceFlags:active{
+        background-color: rgb(110, 110, 110);
+}

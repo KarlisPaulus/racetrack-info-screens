@@ -1,0 +1,128 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 36px;
+    color: #ffffff;
+}
+
+/* Main container */
+.leaderboard-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #000000;
+    border: 2px solid white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Header section */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #00ad06;
+}
+
+.race-status {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Flag display */
+.flag-display {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.timer-display {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #00ad06;
+}
+
+/* Table styles */
+.leaderboard table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.leaderboard th {
+    background-color: #00ad06;
+    color: white;
+    font-weight: bold;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.leaderboard td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.leaderboard tr:nth-child(even) {
+    background-color: #1a1a1a;
+}
+
+.leaderboard tr:hover {
+    background-color: #333;
+}
+
+/* Position highlighting */
+.position-1 {
+    background-color: rgba(255, 217, 0, 0.986) !important;
+    font-weight: bold;
+}
+
+.position-2 {
+    background-color: rgb(192, 192, 192) !important;
+}
+
+.position-3 {
+    background-color: rgb(205, 128, 50) !important;
+}
+
+/* Flag colors */
+.flag-green {
+    background-color: green;
+}
+
+.flag-yellow {
+    background-color: yellow;
+}
+
+.flag-red {
+    background-color: red;
+}
+
+.flag-finished {
+    background: repeating-linear-gradient(
+        45deg,
+        black,
+        black 10px,
+        white 10px,
+        white 20px
+    );
+}

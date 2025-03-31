@@ -1,7 +1,7 @@
 const lapTimersContainer = document.getElementById('lapTimersContainer');
-let currentRaceId = null;
 let raceStartTime = null; // Track the race start time
-let lastPressTime = null; // Track the time of the last button press
+let lastPressTimes = {}; // Track the time of the last button press of cars
+let currentRace = null;
 
 // Initialize Socket.IO connection
 const socket = io();
@@ -51,6 +51,7 @@ function renderLapTimerButtons(race) {
     });
 }
 
+// Function to handle lap timing when button is clicked
 function lapTimer(event) {
     const lapButton = event.currentTarget;
     const timeDisplay = lapButton.myTimeDisplay;
@@ -64,17 +65,16 @@ function lapTimer(event) {
     const currentTime = Date.now();
     let lapTime;
 
-    if (!lastPressTime) {
-        // First press: calculate time from race start
+    if (!lastPressTimes[carNumber]) {
         lapTime = currentTime - raceStartTime;
     } else {
-        // Subsequent presses: calculate time since last press
-        lapTime = currentTime - lastPressTime;
+        lapTime = currentTime - lastPressTimes[carNumber];
     }
+
+    lastPressTimes[carNumber] = currentTime;
 
     const formattedLap = formatLapTime(lapTime);
 
-    // Update best lap time if applicable
     if (!lapButton.dataset.bestLap || lapTime < parseInt(lapButton.dataset.bestLap)) {
         lapButton.dataset.bestLap = lapTime;
     }
@@ -82,19 +82,32 @@ function lapTimer(event) {
     const bestLapTime = parseInt(lapButton.dataset.bestLap);
     const formattedBest = formatLapTime(bestLapTime);
 
-    // Update the time display
     timeDisplay.textContent = `${lapButton.textContent} last lap: ${formattedLap} | Best lap: ${formattedBest}`;
 
-    // Update the last press time
-    lastPressTime = currentTime;
+    let lapCount = Number(lapButton.dataset.lapCount) || 0;
+    lapCount += 1;
+    lapButton.dataset.lapCount = lapCount;
 
-    // Emit lap time data to the server
-    socket.emit('lapTime', {
-        carNumber: carNumber,
+    // Ensure we have a race ID before emitting
+    if (!currentRace?.id) {
+        console.error("No active race ID available");
+        return;
+    }
+
+    socket.emit('saveLapTime', {
+        raceId: currentRace.id,
+        carNumber: parseInt(carNumber),
         lapTime: lapTime,
         formattedLap: formattedLap,
         bestLap: bestLapTime,
-        formattedBest: formattedBest
+        formattedBest: formattedBest,
+        lapCount: lapCount
+    });
+
+    console.log('Lap recorded:', {
+        carNumber: carNumber,
+        lapTime: lapTime,
+        lapCount: lapCount
     });
 }
 
@@ -111,51 +124,62 @@ function formatLapTime(timeInMs) {
 }
 
 // Listen for active race updates
-socket.on('activeRaceId', (raceId) => {
-    currentRaceId = raceId;
-    console.log('Active Race ID:', currentRaceId);
-
-    // Fetch the active race details
-    fetch(`/api/races/${raceId}`)
-        .then(response => response.json())
-        .then(race => {
-            renderLapTimerButtons(race); // Render buttons for the active race
-            enableLapTimerButtons(); // Enable lap timer buttons
-        })
-        .catch(error => console.error('Error fetching active race details:', error));
-});
-
-// Listen for race end event
-socket.on('raceUpdate', (data) => {
-    if (data.running && data.mode === "Safe") {
-        raceStartTime = Date.now(); // Record the race start time
-        lastPressTime = null; // Reset the last press time
-        enableLapTimerButtons(); // Enable lap timer buttons
-    } else if (data.mode === "Finished" || !data.running) {
-        disableLapTimerButtons(); // Disable lap timer buttons when the race ends
-        lapTimersContainer.innerHTML = "<p>Race session has ended.</p>"; // Show race end message
+socket.on('activeRace', (race) => {
+    console.log("Received active race:", race);
+    currentRace = race;
+    if (race && race.drivers.length > 0) {
+        renderLapTimerButtons(race);
+        enableLapTimerButtons();
+        
+        // Initialize last press times for each driver
+        race.drivers.forEach(driver => {
+            const carNum = driver.carAssigned.replace('Car ', '');
+            lastPressTimes[carNum] = null;
+        });
     }
 });
 
-// Fetch the active race ID when the page loads
-fetch('/api/races/active')
-    .then(response => response.json())
-    .then(data => {
-        if (data.activeRaceId) {
-            currentRaceId = data.activeRaceId;
-            console.log('Active Race ID:', currentRaceId);
-
-            // Fetch the active race details
-            fetch(`/api/races/${currentRaceId}`)
-                .then(response => response.json())
-                .then(race => {
-                    renderLapTimerButtons(race); // Render buttons for the active race
-                    enableLapTimerButtons(); // Enable lap timer buttons
-                })
-                .catch(error => console.error('Error fetching active race details:', error));
+// Listen for race updates
+socket.on('raceUpdate', (data) => {
+    console.log('Race state update:', data.mode, 'Running:', data.running);
+    
+    if (data.mode === "Finished" || !data.running) {
+        // Disable all buttons and change their appearance
+        const buttons = document.querySelectorAll('.carButton');
+        buttons.forEach(button => {
+            button.disabled = true;
+            button.style.backgroundColor = '#cccccc';
+            button.style.cursor = 'not-allowed';
+        });
+        
+        // Show race ended message
+        lapTimersContainer.innerHTML = `
+            <div class="race-ended-message">
+                Race Session Has Ended
+            </div>
+        `;
+        
+        // Reset timing data
+        raceStartTime = null;
+        lastPressTimes = {};
+    } else if (data.running) {
+        // Re-enable buttons if race is running
+        const buttons = document.querySelectorAll('.carButton');
+        buttons.forEach(button => {
+            button.disabled = false;
+            button.style.backgroundColor = '#2D8C2D';
+            button.style.cursor = 'pointer';
+        });
+        
+        // Initialize timing if not already set
+        if (!raceStartTime) {
+            const duration = Number(data.timerDuration) || 600;
+            const remaining = Number(data.remainingTime) || duration;
+            const elapsed = (duration - remaining) * 1000;
+            raceStartTime = Date.now() - elapsed;
         }
-    })
-    .catch(error => console.error('Error fetching active race ID:', error));
+    }
+});
 
 // Fullscreen and dark mode buttons (unchanged)
 const fullscreenButton = document.createElement('button');

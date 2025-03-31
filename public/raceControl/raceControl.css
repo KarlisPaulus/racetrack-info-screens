@@ -10,8 +10,6 @@ body {
 }
 
 .startRace {
-    position: relative;
-    display: flex;
     border: 2px solid black;
     border-radius: 40px;
     padding: 1.5vw;
@@ -21,8 +19,6 @@ body {
 }
 
 .endRace {
-    position: relative;
-    display: flex;
     border: 2px solid black;
     border-radius: 40px;
     padding: 1.5vw;
@@ -35,87 +31,73 @@ body {
     border: 3px solid black;
     height: 30vh;
     min-height: 200px;
-    max-height: 250px;
     width: 50vw;
-    min-width: 400px;
+    min-width: 460px;
     justify-content: space-evenly;
     align-items: center;
 }
 
-.safe {
+.safe, .hazard, .danger, .finish {
     display: flex;
     width: 20%;
     height: 20%;
+    min-width: 106px;
     border: 2px solid black;
     border-radius: 40px;
-    text-align: center;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 2vw;
+    font-size: 2rem;
 }
+
 .safe.active {
     background-color: green;
 }
 
-.hazard {
-    display: flex;
-    width: 20%;
-    height: 20%;
-    border: 2px solid black;
-    border-radius: 40px;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 2vw;
-}
 .hazard.active {
     background-color: yellow;
 }
 
-.danger {
-    display: flex;
-    width: 20%;
-    height: 20%;
-    border: 2px solid black;
-    border-radius: 40px;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 2vw;
-}
 .danger.active {
     background-color: red;
-}
-
-.finish {
-    display: flex;
-    width: 20%;
-    height: 20%;
-    border: 2px solid black;
-    border-radius: 40px;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 2vw;
 }
 
 .timer {
     display: flex;
     border: 2px solid black;
     border-radius: 40px;
-    padding: 1.5vw;
+    padding: 1rem;
     flex-direction: column-reverse;
-    font-size: 2vw;
+    font-size: 1.7rem;
 }
 
-.nextRaceSess {
-    display: flex;
-    border: 2px solid black;
-    border-radius: 40px;
-    padding: 1.5vw;
+.nextRaceSession {
     font-size: 20px;
+}
+
+/* Media query for smaller devices */
+@media (max-width: 470px) {
+
+    .raceModes {
+        flex-direction: column;
+        width: 90%;
+        min-width: unset;
+    }
+
+    .safe, .hazard, .danger, .finish {
+        width: 60%;
+        height: 30%;
+        font-size: 1.5rem;
+        margin: 5px 0;
+    }
+
+    .nextRaceSession {
+        font-size: 16px; 
+    }
+
+    .timer {
+        font-size: 1.2rem;
+        padding: 0.8rem;
+        align-items: center;
+    }
 }

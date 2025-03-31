@@ -12,7 +12,13 @@ const raceRoutes = require('./routes/routes');
 const path = require('path');
 const { clearInterval } = require('timers');  // For timer functions
 
-// Load environment variables from .env
+// Race status default values
+const initialTime = process.env.TIMER_DURATION;
+let timerInterval = null;
+let raceStatus = {running: false, mode: "Danger", remainingTime: 0, timerDuration: initialTime};
+let startedRace = null;
+
+// Load environment variables
 dotenv.config();
 
 // Check if required environment variables are set
@@ -156,11 +162,6 @@ app.get('/race-countdown', (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/raceCountdown/race-countdown.html'));
 });
 
-// Serve leader-board.html
-app.get('/leader-board', (req, res) => {
-  res.sendFile(path.join(__dirname, '/../public/Spectator/leader-board.html'));
-});
-
 // Serve race-flags.html
 app.get('/race-flags', (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/raceFlags/race-flags.html'));
@@ -168,6 +169,11 @@ app.get('/race-flags', (req, res) => {
 
 // Register raceRoutes
 app.use("/api", raceRoutes);
+
+// Serve leader-board.html
+app.get('/leader-board', (req, res) => {
+    res.sendFile(path.join(__dirname, '/../public/Leaderboard/leader-board.html'));
+});
 
 // Fetch active race ID
 app.get('/api/races/active', (req, res) => {
@@ -183,16 +189,6 @@ app.get('/api/races/active', (req, res) => {
 // 8) Race/timer logic & Socket.IO events (from MAIN FILE)
 //---------------------------------------------------
 
-// Race status default values
-const initialTime = process.env.TIMER_DURATION;
-let timerInterval = null;
-let raceStatus = {
-  running: false,
-  mode: "Danger",
-  remainingTime: 0,
-  timerDuration: initialTime
-};
-
 // Socket.IO connection
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
@@ -203,7 +199,9 @@ io.on('connection', (socket) => {
   // Send initial race status
   socket.emit("raceUpdate", raceStatus);
 
-  // Handle race start
+  socket.emit("activeRace", startedRace);
+
+  // Handle race start event
   socket.on("start", () => {
     if (!raceStatus.running) {
       raceStatus = {
@@ -219,23 +217,25 @@ io.on('connection', (socket) => {
         io.emit("timerUpdate", raceStatus.remainingTime);
 
         if (raceStatus.remainingTime <= 0) {
-          clearInterval(timerInterval);
-          raceStatus = { running: true, mode: "Finished", timerInterval: null };
-          io.emit("raceUpdate", raceStatus);
+          clearInterval(timerInterval); // Stop timer
+          raceStatus = {running: true, mode: "Finished", timerDuration: initialTime, timerInterval: null};
+          io.emit("raceUpdate", raceStatus);  // Send real-time race update
         }
       }, 1000);
 
       io.emit("raceUpdate", raceStatus);
 
-      // Mark the current race as active
-      const activeRace = raceController.startRace();
-      if (activeRace) {
-        io.emit("activeRaceId", activeRace.id);
-      }
+    	 // Mark the current race as active
+    	  startedRace = raceController.startRace();
 
-      // Inform clients that the race session has started
-      io.emit("racesList", raceController.getRaces());
-    }
+    	// Broadcast the active race
+        if (startedRace) {
+            io.emit("activeRace", startedRace); // Send the active race to all clients
+        }
+
+        // Inform clients that the race session has started
+        io.emit("racesList", raceController.getRaces());
+  	}
   });
 
   // Real-time race mode changes
@@ -275,8 +275,10 @@ io.on('connection', (socket) => {
       );
     }
 
+    startedRace = null;
+
+    // Emit the updated race status
     io.emit("raceUpdate", raceStatus);
-    io.emit("racesList", raceController.getRaces());
   });
 
   socket.on('disconnect', () => {
@@ -296,10 +298,53 @@ io.on('connection', (socket) => {
     io.emit('raceDeleted', raceId);
   });
 
-  socket.on('getRaces', () => {
-    const races = raceController.getRaces();
-    socket.emit('racesList', races);
-  });
+	// Listen for requests to get the list of races
+    socket.on('getRaces', () => {
+        const races = require('./controllers/raceController').getRaces();
+        socket.emit('racesList', races);
+    });
+
+	socket.on('saveLapTime', (lapData) => {
+		console.log('Received lap:', {
+			car: lapData.carNumber,
+			count: lapData.lapCount,
+			type: typeof lapData.lapCount
+		});
+		
+		// Convert carNumber to number
+		const carNumber = typeof lapData.carNumber === 'string' ? 
+			parseInt(lapData.carNumber.replace('Car ', '')) : 
+			lapData.carNumber;
+	
+		const race = raceController.getActiveRace();
+		if (race) {
+			const driver = race.drivers.find(d => {
+				const driverCarNum = parseInt(d.carAssigned.replace('Car ', ''));
+				return driverCarNum === carNumber;
+			});
+			
+			if (driver) {
+				if (!driver.lapTimes) driver.lapTimes = [];
+				driver.lapTimes.push({
+					lapTime: lapData.lapTime,
+					formattedLap: lapData.formattedLap,
+					bestLap: lapData.bestLap,
+					formattedBest: lapData.formattedBest,
+					lapCount: Number(lapData.lapCount) // Ensure stored as number
+				});
+				
+				// Emit updates
+				io.emit('lapTimeUpdate', {
+					carNumber: carNumber,
+					lapTime: lapData.lapTime,
+					lapCount: Number(lapData.lapCount), // Ensure number
+					bestLap: lapData.bestLap,
+					formattedLap: lapData.formattedLap,
+					formattedBest: lapData.formattedBest
+				});
+			}
+		}
+	});
 });
 
 //---------------------------------------------------

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Race Leaderboard</title>
+    <link rel="stylesheet" href="/Leaderboard/leader-board.css">
+</head>
+<body>
+    <h1>Race Leaderboard</h1>
+    <div class="leaderboard-container">
+        <div class="header">
+            <h2>Current Race Status</h2>
+            <div class="race-status">
+                <div class="flag-display"></div>
+                <div class="timer-display">00:00</div>
+            </div>
+        </div>
+        <div class="leaderboard">
+            <table>
+                <tbody id="leaderboard-body">
+                    <!-- Leaderboard rows will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/Leaderboard/leader-board.js"></script>
+</body>
+</html>

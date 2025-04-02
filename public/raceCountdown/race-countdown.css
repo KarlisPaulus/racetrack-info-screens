@@ -1,25 +1,76 @@
+:root {
+	--bg-color: white;
+	--text-color: black;
+	--timer-color: #00ad06;
+  }
+  
+  .dark-mode {
+	--bg-color: black;
+	--text-color: white;
+	--timer-color: #00ad06;
+  }
+
 body {
     margin: 0;
-    background-color: gray;
+    background-color: var(--bg-color);
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
+	transition: background-color 0.3s;
 }
 
 .timer {
     font-size: 20vw;
+	color: var(--timer-color);
+    transition: color 0.3s;
 }
 
-.fullScreenButton {
+/* Mode toggle and fullscreen buttons */
+.mode-toggle-button {
     position: fixed;
-    top: 2vh;
-    left: 2vw;
-    padding: 1vh 1vw;
-    border: 2px solid white;
-    border-radius: 5px;
-    background-color: black;
-    color: white;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     cursor: pointer;
-    font-size: 2.5vw;
+    border: none;
+    background-color: transparent;
+    z-index: 1000;
+}
+
+.fullscreen-toggle-button {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    z-index: 1000;
+}
+
+#darkModeButton {
+    background-image: url('/assets/Dark-mode-icon.png');
+}
+
+#lightModeButton {
+    background-image: url('/assets/Light-mode-icon.png');
+    display: none;
+}
+
+#fullscreenButton {
+    background-image: url('/assets/Fullscreen.png');
+}
+
+#exitFullscreenButton {
+    background-image: url('/assets/exitFullscreen.png');
+    display: none;
 }

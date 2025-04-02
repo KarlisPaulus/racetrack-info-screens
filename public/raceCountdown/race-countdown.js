@@ -1,5 +1,55 @@
 const socket = io();
 
+// Add dark/light mode toggle functionality
+const darkModeButton = document.getElementById('darkModeButton');
+const lightModeButton = document.getElementById('lightModeButton');
+const fullscreenButton = document.getElementById('fullscreenButton');
+const exitFullscreenButton = document.getElementById('exitFullscreenButton');
+
+// Check for saved mode preference or use preferred color scheme
+const savedMode = localStorage.getItem('mode');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedMode === 'dark' || (!savedMode && prefersDark)) {
+	document.body.classList.add('dark-mode');
+	darkModeButton.style.display = 'none';
+	lightModeButton.style.display = 'inline-block';
+}
+
+// Mode toggle buttons
+darkModeButton.addEventListener('click', () => {
+	document.body.classList.add('dark-mode');
+	localStorage.setItem('mode', 'dark');
+	darkModeButton.style.display = 'none';
+	lightModeButton.style.display = 'inline-block';
+});
+
+lightModeButton.addEventListener('click', () => {
+	document.body.classList.remove('dark-mode');
+	localStorage.setItem('mode', 'light');
+	lightModeButton.style.display = 'none';
+	darkModeButton.style.display = 'inline-block';
+});
+
+// Fullscreen functionality
+fullscreenButton.addEventListener('click', () => {
+	document.documentElement.requestFullscreen();
+});
+
+exitFullscreenButton.addEventListener('click', () => {
+	document.exitFullscreen();
+});
+
+document.addEventListener('fullscreenchange', () => {
+	if (document.fullscreenElement) {
+		fullscreenButton.style.display = 'none';
+		exitFullscreenButton.style.display = 'inline-block';
+	} else {
+		fullscreenButton.style.display = 'inline-block';
+		exitFullscreenButton.style.display = 'none';
+	}
+});
+
 const timer = document.createElement("div");
 timer.classList.add("timer");
 
@@ -28,24 +78,3 @@ socket.on("timerUpdate", (remainingTime)=> {
 });
 
 document.body.append(timer);
-
-// Create full screen button
-const fullScreenButton = document.createElement("div");
-fullScreenButton.classList.add("fullScreenButton");
-fullScreenButton.textContent = "Fullscreen";
-document.body.append(fullScreenButton);
-
-// Click event listener
-fullScreenButton.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-            fullScreenButton.style.display = "none";    // Hide button when in fullscreen
-    }
-});
-
-// Listen for fullscreen changes
-document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-        fullScreenButton.style.display = "block";   // Show button
-    }
-});

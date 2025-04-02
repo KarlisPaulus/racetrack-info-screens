@@ -1,6 +1,23 @@
+:root {
+	--bg-color: white;
+	--text-color: black;
+	--border-color: black;
+	--row-bg: white;
+	--container-bg: #e0e0e0;
+  }
+  
+.dark-mode {
+	--bg-color: black;
+	--text-color: white;
+	--border-color: white;
+	--row-bg: #333;
+	--container-bg: #111;
+  }
+
 body {
-  background-color: rgb(175, 175, 175);
-  /*background-color: #222;*/
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 #lapTimersContainer {
@@ -14,23 +31,24 @@ body {
     grid-template-rows: repeat(8, 1fr); /* 8 equal-height rows */
     gap: 8px;
     box-sizing: border-box;
-    background-color: rgb(175, 175, 175);
-    /*background-color: #181818;*/
-  }
+    background-color: var(--container-bg);
+    transition: background-color 0.3s;
+}
   
-  .carRow {
+.carRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px; /* Space on the bottom/top, and sides of the button*/
-    color: #000000;
+    color: var(--text-color);
     font-size: 20px;
-    border: 2px solid #333;
+    border: 2px solid var(--border-color);
     box-sizing: border-box;
-    background-color: white;
-  }
+    background-color: var(--row-bg);
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
   
-  .carButton {
+.carButton {
     width: 100px;
     height: 50px;
     font-size: 25px;
@@ -39,16 +57,18 @@ body {
     color: white;
     border: none;
     border-radius: 4px;
-    /*transition: background-color 0.1s ease;*/
-  }.carButton:hover {
+}
+  
+.carButton:hover {
         background-color: #36A336;
-   }
-   .carButton:active {
+}
+
+.carButton:active {
         background-color: white;
-   }
+}
         
 
-  .endRaceButton {
+.endRaceButton {
     background-color: rgb(220, 0, 0);
     color: white;
     position: absolute;
@@ -61,15 +81,17 @@ body {
     height: 70px;
     font-size: 25px;
     cursor: pointer;
-  }.endRaceButton:hover {
+}
+
+.endRaceButton:hover {
         background-color: red;
-        /*transition: background-color 0.1s ease;*/
-   }
-    .endRaceButton:active {
+}
+
+.endRaceButton:active {
         background-color: white;
-   }
+}
    
-	.race-ended-message {
+.race-ended-message {
     	display: flex;
     	justify-content: center;
     	align-items: center;
@@ -79,74 +101,67 @@ body {
     	text-align: center;
     	background-color: #c21300;
     	border-radius: 8px;
-	}
+}
 
-	.carButton:disabled {
+.carButton:disabled {
     	background-color: #666 !important;
     	color: #999 !important;
     	border: 2px solid #333 !important;
-	}
+}
 
-	.carButton:disabled:hover {
+.carButton:disabled:hover {
     	background-color: #666 !important;
-	}
+}
 
-	.carButton:disabled:active {
+.carButton:disabled:active {
     	background-color: #666 !important;
-	}
-
-	.fullscreenButton {
-  		width: 50px;
-  		height: 50px;
-  		background: url(assets/Fullscreen.png) no-repeat center center;
-  		background-size: contain;
-  		cursor: pointer;
-	}
-  .fullscreenButton:hover {
-    background-color: rgb(143, 143, 143);
-  }
-  .fullscreenButton:active {
-    background-color: white;
-  }
-
-.exitFullscreenButton{
-  width: 50px;
-  height: 50px;
-  background: url(assets/exitFullscreen.png) no-repeat center center;
-  background-size: contain;
-  cursor: pointer;
 }
-  .exitFullscreenButton:hover {
-    background-color: rgb(143, 143, 143);
-  }
-  .exitFullscreenButton:active {
-    background-color: white;
-  }
 
-.lightModeButton{
-  width: 50px;
-  height: 50px;
-  background: url(assets/Light-mode-icon.png) no-repeat center center;
-  background-size: contain;
-  cursor: pointer;
+/* Mode toggle and fullscreen buttons */
+.mode-toggle-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    z-index: 1000;
 }
-  .lightModeButton:hover {
-    background-color: rgb(143, 143, 143);
-  }
-  .lightModeButton:active {
-    background-color: white;
-  }
 
-.darkModeButton{
-  width: 50px;
-  height: 50px;
-  background: url(assets/Dark-mode-icon.png) no-repeat center center;
-  background-size: contain;
-  cursor: pointer;
+.fullscreen-toggle-button {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    z-index: 1000;
 }
-  .darkModeButton:hover {
-    background-color: rgb(143, 143, 143);
-  }
-  .darkModeButton:active {
-    background-color: white;
-  }
+
+#darkModeButton {
+    background-image: url('/assets/Dark-mode-icon.png');
+}
+
+#lightModeButton {
+    background-image: url('/assets/Light-mode-icon.png');
+    display: none;
+}
+
+#fullscreenButton {
+    background-image: url('/assets/Fullscreen.png');
+}
+
+#exitFullscreenButton {
+    background-image: url('/assets/exitFullscreen.png');
+    display: none;
+}

@@ -7,8 +7,14 @@
   <link rel="stylesheet" href="/lap-line-tracker/lap-line-tracker.css">
 </head>
 <body>
-  <div id="lapTimersContainer"></div>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/lap-line-tracker/lap-line-tracker.js"></script>
+	<!-- Mode toggle and fullscreen buttons -->
+	<button id="darkModeButton" class="mode-toggle-button"></button>
+	<button id="lightModeButton" class="mode-toggle-button"></button>
+	<button id="fullscreenButton" class="fullscreen-toggle-button"></button>
+	<button id="exitFullscreenButton" class="fullscreen-toggle-button"></button>
+
+  	<div id="lapTimersContainer"></div>
+  	<script src="/socket.io/socket.io.js"></script>
+  	<script src="/lap-line-tracker/lap-line-tracker.js"></script>
 </body>
 </html>

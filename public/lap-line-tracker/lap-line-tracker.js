@@ -6,6 +6,56 @@ let currentRace = null;
 // Initialize Socket.IO connection
 const socket = io();
 
+// Add dark/light mode toggle functionality
+const darkModeButton = document.getElementById('darkModeButton');
+const lightModeButton = document.getElementById('lightModeButton');
+const fullscreenButton = document.getElementById('fullscreenButton');
+const exitFullscreenButton = document.getElementById('exitFullscreenButton');
+
+// Check for saved mode preference or use preferred color scheme
+const savedMode = localStorage.getItem('mode');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedMode === 'dark' || (!savedMode && prefersDark)) {
+    document.body.classList.add('dark-mode');
+    darkModeButton.style.display = 'none';
+    lightModeButton.style.display = 'inline-block';
+}
+
+// Mode toggle buttons
+darkModeButton.addEventListener('click', () => {
+    document.body.classList.add('dark-mode');
+    localStorage.setItem('mode', 'dark');
+    darkModeButton.style.display = 'none';
+    lightModeButton.style.display = 'inline-block';
+});
+
+lightModeButton.addEventListener('click', () => {
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('mode', 'light');
+    lightModeButton.style.display = 'none';
+    darkModeButton.style.display = 'inline-block';
+});
+
+// Fullscreen functionality
+fullscreenButton.addEventListener('click', () => {
+    document.documentElement.requestFullscreen();
+});
+
+exitFullscreenButton.addEventListener('click', () => {
+    document.exitFullscreen();
+});
+
+document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement) {
+        fullscreenButton.style.display = 'none';
+        exitFullscreenButton.style.display = 'inline-block';
+    } else {
+        fullscreenButton.style.display = 'inline-block';
+        exitFullscreenButton.style.display = 'none';
+    }
+});
+
 // Function to enable lap timer buttons
 function enableLapTimerButtons() {
     const carButtons = document.querySelectorAll('.carButton');
@@ -179,64 +229,6 @@ socket.on('raceUpdate', (data) => {
             raceStartTime = Date.now() - elapsed;
         }
     }
-});
-
-// Fullscreen and dark mode buttons (unchanged)
-const fullscreenButton = document.createElement('button');
-fullscreenButton.className = "fullscreenButton";
-fullscreenButton.addEventListener('click', () => {
-    document.documentElement.requestFullscreen();
-});
-document.body.appendChild(fullscreenButton);
-
-const exitFullscreenButton = document.createElement('button');
-exitFullscreenButton.className = "exitFullscreenButton";
-exitFullscreenButton.addEventListener('click', () => {
-    document.exitFullscreen();
-});
-document.body.appendChild(exitFullscreenButton);
-
-exitFullscreenButton.style.display = 'none';
-
-document.addEventListener('fullscreenchange', () => {
-    if (document.fullscreenElement) {
-        fullscreenButton.style.display = 'none';
-        exitFullscreenButton.style.display = 'inline-block';
-    } else {
-        fullscreenButton.style.display = 'inline-block';
-        exitFullscreenButton.style.display = 'none';
-    }
-});
-
-const darkModeButton = document.createElement('button');
-darkModeButton.className = "darkModeButton";
-
-const lightModeButton = document.createElement('button');
-lightModeButton.className = "lightModeButton";
-lightModeButton.style.display = 'none';
-
-darkModeButton.addEventListener('click', () => {
-    document.body.style.backgroundColor = "black";
-    lapTimersContainer.style.backgroundColor = "black";
-    const rows = lapTimersContainer.querySelectorAll('.carRow');
-    rows.forEach(row => {
-        row.style.backgroundColor = "rgb(43, 43, 43)";
-        row.style.color = "white";
-    });
-    darkModeButton.style.display = 'none';
-    lightModeButton.style.display = 'inline-block';
-});
-
-lightModeButton.addEventListener('click', () => {
-    document.body.style.backgroundColor = "rgb(175, 175, 175)";
-    lapTimersContainer.style.backgroundColor = "rgb(175, 175, 175)";
-    const rows = lapTimersContainer.querySelectorAll('.carRow');
-    rows.forEach(row => {
-        row.style.backgroundColor = "white";
-        row.style.color = "#000000";
-    });
-    lightModeButton.style.display = 'none';
-    darkModeButton.style.display = 'inline-block';
 });
 
 document.body.appendChild(darkModeButton);

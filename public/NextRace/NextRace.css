@@ -1,0 +1,138 @@
+:root {
+	--bg-color: white;
+	--text-color: black;
+	--border-color: black;
+	--section-bg: white;
+	--paddock-message: #00ad06;
+  }
+  
+  .dark-mode {
+	--bg-color: black;
+	--text-color: white;
+	--border-color: white;
+	--section-bg: black;
+	--paddock-message: #00ad06;
+  }
+  
+  /* General body styles */
+  body {
+	  font-family: Arial, sans-serif;
+	  margin: 0;
+	  padding: 0;
+	  background-color: var(--bg-color);
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	  min-height: 100vh;
+	  color: var(--text-color);
+	  transition: background-color 0.3s, color 0.3s;
+  }
+  
+  h1 {
+	  text-align: center;
+	  margin-top: 20px;
+	  font-size: 36px;
+	  color: var(--text-color);
+  }
+  
+  /* Main container for race details */
+  .main-container {
+	  display: flex;
+	  justify-content: center;
+	  width: 90%;
+	  max-width: 1200px;
+	  margin: 20px auto;
+  }
+  
+  /* Section styles */
+  section {
+	  margin: 20px;
+	  background-color: var(--section-bg);
+	  border: 2px solid var(--border-color);
+	  border-radius: 8px;
+	  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	  flex: 1;
+	  padding: 20px;
+	  box-sizing: border-box;
+	  transition: background-color 0.3s, border-color 0.3s;
+  }
+  
+  /* Next Race section */
+  #next-race-details {
+	  width: 400px;
+	  height: auto;
+	  overflow-y: auto;
+  }
+  
+  #next-race-content {
+	  color: var(--text-color);
+  }
+  
+  #next-race-drivers {
+	  list-style-type: none;
+	  padding: 0;
+  }
+  
+  #next-race-drivers li {
+	  padding: 8px;
+	  background-color: var(--section-bg);
+	  margin-bottom: 10px;
+	  border-radius: 4px;
+	  border: 1px solid var(--border-color);
+	  color: var(--text-color);
+  }
+  
+  #paddock-message {
+	  color: var(--paddock-message);
+	  font-weight: bold;
+	  margin-top: 20px;
+  }
+  
+  /* Mode toggle and fullscreen buttons */
+  .mode-toggle-button {
+	  position: fixed;
+	  top: 20px;
+	  right: 20px;
+	  width: 50px;
+	  height: 50px;
+	  background-size: contain;
+	  background-repeat: no-repeat;
+	  background-position: center;
+	  cursor: pointer;
+	  border: none;
+	  background-color: transparent;
+	  z-index: 1000;
+  }
+  
+  .fullscreen-toggle-button {
+	  position: fixed;
+	  top: 80px;
+	  right: 20px;
+	  width: 50px;
+	  height: 50px;
+	  background-size: contain;
+	  background-repeat: no-repeat;
+	  background-position: center;
+	  cursor: pointer;
+	  border: none;
+	  background-color: transparent;
+	  z-index: 1000;
+  }
+  
+  #darkModeButton {
+	  background-image: url('/assets/Dark-mode-icon.png');
+  }
+  
+  #lightModeButton {
+	  background-image: url('/assets/Light-mode-icon.png');
+	  display: none;
+  }
+  
+  #fullscreenButton {
+	  background-image: url('/assets/Fullscreen.png');
+  }
+  
+  #exitFullscreenButton {
+	  background-image: url('/assets/exitFullscreen.png');
+	  display: none;
+  }

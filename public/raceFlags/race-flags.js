@@ -1,6 +1,28 @@
 // Initialize real-time connection
 const socket = io();
 
+const fullscreenButton = document.getElementById('fullscreenButton');
+const exitFullscreenButton = document.getElementById('exitFullscreenButton');
+
+// Fullscreen functionality
+fullscreenButton.addEventListener('click', () => {
+	document.documentElement.requestFullscreen();
+});
+
+exitFullscreenButton.addEventListener('click', () => {
+	document.exitFullscreen();
+});
+
+document.addEventListener('fullscreenchange', () => {
+	if (document.fullscreenElement) {
+		fullscreenButton.style.display = 'none';
+		exitFullscreenButton.style.display = 'inline-block';
+	} else {
+		fullscreenButton.style.display = 'inline-block';
+		exitFullscreenButton.style.display = 'none';
+	}
+});
+
 // Create flag element
 const flag = document.createElement("div");
 flag.classList.add("flag");
@@ -19,26 +41,5 @@ socket.on("raceUpdate", (data) => {
         flag.classList.add("finished");
     }
     document.body.append(flag);
-});
-
-// Create full screen button
-const fullScreenButton = document.createElement("div");
-fullScreenButton.classList.add("fullScreenButton");
-fullScreenButton.textContent = "Fullscreen";
-document.body.append(fullScreenButton);
-
-// Click event listener
-fullScreenButton.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-            fullScreenButton.style.display = "none";    // Hide button when in fullscreen
-    }
-});
-
-// Listen for fullscreen changes
-document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-        fullScreenButton.style.display = "block";   // Show button
-    }
 });
 

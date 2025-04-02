@@ -1,21 +1,46 @@
+:root {
+	--bg-color: white;
+	--text-color: black;
+	--border-color: black;
+	--container-bg: #f0f0f0;
+	--header-border: #00ad06;
+	--timer-color: #00ad06;
+	--table-even: #f5f5f5;
+	--table-hover: #e0e0e0;
+	--flag-border: black;
+  }
+  
+  .dark-mode {
+	--bg-color: black;
+	--text-color: white;
+	--border-color: white;
+	--container-bg: #1a1a1a;
+	--header-border: #00ad06;
+	--timer-color: #00ad06;
+	--table-even: #333;
+	--table-hover: #444;
+	--flag-border: white;
+  }
+
 /* General body styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: black;
+    background-color: var(--bg-color);
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    color: white;
+    color: var(--text-color);
+	transition: background-color 0.3s, color 0.3s;
 }
 
 h1 {
     text-align: center;
     margin-top: 20px;
     font-size: 36px;
-    color: #ffffff;
+    color: var(--text-color);
 }
 
 /* Main container */
@@ -23,12 +48,13 @@ h1 {
     width: 90%;
     max-width: 1200px;
     margin: 20px auto;
-    background-color: #000000;
-    border: 2px solid white;
+    background-color: var(--container-bg);
+    border: 4px solid var(--border-color);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     box-sizing: border-box;
+	transition: background-color 0.3s, border-color 0.3s;
 }
 
 /* Header section */
@@ -38,7 +64,7 @@ h1 {
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #00ad06;
+    border-bottom: 2px solid var(--header-border);
 }
 
 .race-status {
@@ -52,13 +78,14 @@ h1 {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 2px solid white;
+    border: 2px solid var(--flag-border);
+	transition: border-color 0.3s;
 }
 
 .timer-display {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #00ad06;
+    color: var(--timer-color);
 }
 
 /* Table styles */
@@ -79,15 +106,17 @@ h1 {
 .leaderboard td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s;
 }
 
 .leaderboard tr:nth-child(even) {
-    background-color: #1a1a1a;
+    background-color: var(--table-even);
+    transition: background-color 0.3s;
 }
 
 .leaderboard tr:hover {
-    background-color: #333;
+    background-color: var(--table-hover);
 }
 
 /* Position highlighting */
@@ -125,4 +154,53 @@ h1 {
         white 10px,
         white 20px
     );
+}
+
+/* Mode toggle and fullscreen buttons */
+.mode-toggle-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    z-index: 1000;
+}
+
+.fullscreen-toggle-button {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    z-index: 1000;
+}
+
+#darkModeButton {
+    background-image: url('/assets/Dark-mode-icon.png');
+}
+
+#lightModeButton {
+    background-image: url('/assets/Light-mode-icon.png');
+    display: none;
+}
+
+#fullscreenButton {
+    background-image: url('/assets/Fullscreen.png');
+}
+
+#exitFullscreenButton {
+    background-image: url('/assets/exitFullscreen.png');
+    display: none;
 }

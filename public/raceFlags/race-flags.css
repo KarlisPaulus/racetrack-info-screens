@@ -12,15 +12,26 @@ body {
     background-size: 20vw 20vw;
 }
 
-.fullScreenButton {
+.fullscreen-toggle-button {
     position: fixed;
-    top: 2vh;
-    left: 2vw;
-    padding: 1vh 1vw;
-    border: 2px solid white;
-    border-radius: 5px;
-    background-color: black;
-    color: white;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     cursor: pointer;
+    border: none;
+    background-color: transparent;
+    z-index: 1000;
 }
 
+#fullscreenButton {
+    background-image: url('/assets/Fullscreen.png');
+}
+
+#exitFullscreenButton {
+    background-image: url('/assets/exitFullscreen.png');
+    display: none;
+}

@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-    
 <head>
   <meta charset="UTF-8">
+  <!-- This meta tag makes sure the page scales correctly on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Beachside Racetrack Login</title>
   <link rel="stylesheet" href="/Login_Page/login.css">
 </head>
-
 <body>
+  <!-- Wrap your content in a container that centers everything -->
+  <div class="wrapper">
+    <div class="caption">Welcome to Beachside Racetrack!</div>
+  </div>
   <script src="/socket.io/socket.io.js"></script>
-  <div class="caption">Welcome to Beachside Racetrack!</div>
-<script>
-  const socket = io();
-</script>
-<script src="/Login_Page/login.js"></script>
+  <script>
+    const socket = io();
+  </script>
+  <!-- Make sure your login.js appends the login container to the wrapper -->
+  <script src="/Login_Page/login.js"></script>
 </body>
 </html>

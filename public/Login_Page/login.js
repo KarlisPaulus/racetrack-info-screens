@@ -1,8 +1,12 @@
-const container = document.createElement('div'); // Create a container for the three main buttons
-container.className = 'loginContainer';
-document.body.appendChild(container);
+// Find the wrapper container
+const wrapper = document.querySelector('.wrapper') || document.body;
 
-const loginButton = document.createElement('button'); // CREATE BUTTONS
+// Create a container for the three main buttons
+const container = document.createElement('div');
+container.className = 'loginContainer';
+wrapper.appendChild(container);
+
+const loginButton = document.createElement('button');
 loginButton.id = 'loginButton';
 loginButton.textContent = 'Login';
 loginButton.className = 'loginBut';
@@ -20,7 +24,7 @@ driverButton.textContent = 'Driver';
 driverButton.className = 'driverBut';
 container.appendChild(driverButton);
 
-loginButton.addEventListener('click', () => { // EVENT LISTENERS FOR BUTTONS
+loginButton.addEventListener('click', () => {
   promptForAccessKey();
 });
 
@@ -32,62 +36,63 @@ driverButton.addEventListener('click', () => {
   toggleDriverOptions();
 });
 
+function promptForAccessKey() {
+  const accessKey = prompt("Enter your access key:");
+  if (!accessKey) return;
+  
+  fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ accessKey })
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(data => {
+        throw new Error(data.message);
+      });
+    }
+    return response.json();
+  })
+  .then(data => {
+    window.location.href = data.redirectUrl;
+  })
+  .catch(err => {
+    alert(err.message);
+    promptForAccessKey();
+  });
+}
 
-
-
-
-        function promptForAccessKey() { // Prompt for key, send to the server
-        const accessKey = prompt("Enter your access key:");
-        if (!accessKey) return;
-        
-        fetch('/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            // Send only the access key so the server will decide the correct page.
-            body: JSON.stringify({ accessKey })
-        })
-        .then(response => {
-            if (!response.ok) {
-            return response.json().then(data => {
-                throw new Error(data.message);
-            });
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Redirect to the page chosen by the server
-            window.location.href = data.redirectUrl;
-        })
-        .catch(err => {
-            alert(err.message);
-            // re-prompt the user
-            promptForAccessKey();
-        });
-        }
-
-
-
-
-
-// Create/Toggle Driver buttons
 function toggleDriverOptions() {
   let driverOptions = document.getElementById('driverOptions');
   if (driverOptions) {
-
-    // Toggle visibility if already created
-    driverOptions.style.display = driverOptions.style.display === 'none' ? 'grid' : 'none';
-    loginButton.style.display = loginButton.style.display === 'block' ? 'none' : 'block';
-    guestButton.style.display = guestButton.style.display === 'block' ? 'none' : 'block';
+    // Toggle display based on current state.
+    if (driverOptions.style.display === 'grid') {
+      driverOptions.style.display = 'none';
+      loginButton.style.display = 'block';
+      guestButton.style.display = 'block';
+      // Remove the "active" class so CSS hover/active styles take over.
+      driverButton.classList.remove('active');
+      driverButton.textContent = 'Driver';
+    } else {
+      driverOptions.style.display = 'grid';
+      loginButton.style.display = 'none';
+      guestButton.style.display = 'none';
+      driverButton.classList.add('active');
+      driverButton.textContent = 'Back';
+    }
   } else {
-    loginButton.style.display = loginButton.style.display === 'none' ? 'block' : 'none'; // Taggle other buttons
-    guestButton.style.display = guestButton.style.display === 'none' ? 'block' : 'none';
+    // When driverOptions don't exist, create them and add the active class.
+    loginButton.style.display = 'none';
+    guestButton.style.display = 'none';
+    driverButton.textContent = 'Back';
+    driverButton.classList.add('active');
 
-    // Create a new container for driver-specific buttons
     driverOptions = document.createElement('div');
     driverOptions.id = 'driverOptions';
     driverOptions.className = 'driverOpt';
+    driverOptions.style.display = 'grid';
     
-    const nextRaceBtn = document.createElement('button'); // Make Buttons.
+    const nextRaceBtn = document.createElement('button');
     nextRaceBtn.id = 'nextRace';
     nextRaceBtn.textContent = 'Next Race';
     nextRaceBtn.className = 'nextRace';
@@ -99,7 +104,7 @@ function toggleDriverOptions() {
     const raceCountdownBtn = document.createElement('button');
     raceCountdownBtn.id = 'raceCountdown';
     raceCountdownBtn.textContent = 'Race Countdown';
-    raceCountdownBtn.className = 'raceCount'
+    raceCountdownBtn.className = 'raceCount';
     raceCountdownBtn.addEventListener('click', () => {
       window.location.href = '/race-countdown';
     });
@@ -114,6 +119,6 @@ function toggleDriverOptions() {
     });
     driverOptions.appendChild(raceFlagsBtn);
     
-    container.appendChild(driverOptions); // Append
+    container.appendChild(driverOptions);
   }
 }

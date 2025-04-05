@@ -440,4 +440,56 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Failed to create race.");
         }
     });
+
+    // Add mobile-specific touch feedback
+    function setupMobileInteractions() {
+        // Touch feedback for list items
+        document.querySelectorAll('#race-list li, button').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.classList.add('touch-active');
+            });
+            
+            element.addEventListener('touchend', function() {
+                this.classList.remove('touch-active');
+            });
+        });
+    }
+
+    // Adjust layout on resize
+    function handleResize() {
+        if (window.innerWidth <= 768) {
+            // Mobile-specific adjustments
+            document.querySelectorAll('input, button').forEach(el => {
+                el.style.minHeight = '44px';
+            });
+        }
+    }
+
+    // Initialize
+    if ('ontouchstart' in window) {
+        setupMobileInteractions();
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    // Add CSS for touch feedback
+    const style = document.createElement('style');
+    style.textContent = `
+        .touch-active {
+            opacity: 0.8;
+            transform: scale(0.98);
+            transition: all 0.1s;
+        }
+        
+        @media (max-width: 768px) {
+            #race-list li {
+                padding: 12px !important;
+            }
+            
+            button {
+                margin: 4px 0 !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 });

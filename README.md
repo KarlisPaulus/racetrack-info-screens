@@ -124,7 +124,7 @@ Assuming your application runs on port 3000, execute:
 ngrok http http://localhost:3000
 ```
 Use the public URL:
-ngrok will display a public URL (e.g., https://abcd1234.ngrok.io). Use this URL on any device to access your locally running Racetrack application.
+ngrok will display a public URL (e.g., https://2819-90-191-130-150.ngrok-free.app). Use this URL on any device to access your locally running Racetrack application.
 
 
 ## User guide

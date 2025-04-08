@@ -98,10 +98,10 @@ http://localhost:3000
 ### (Optional) Expose your local server to external networks using ngrok
 If you want the application to be accessible from other devices (for example, to use it on a mobile device):
 
-    Sign Up and Download:
-    Go to ngrok.com, create a free account, and download the appropriate version for your operating system, or:
+Sign Up and Download:
+Go to ngrok.com, create a free account, and download the appropriate version for your operating system, or:
 
-	Install ngrok via Apt with the following command in the terminal:
+Install ngrok via Apt with the following command in the terminal:
 ```bash
 	curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
 	| sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \

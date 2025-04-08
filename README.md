@@ -99,7 +99,7 @@ http://localhost:3000
 If you want the application to be accessible from other devices (for example, to use it on a mobile device):
 
 Sign Up and Download:
-Go to ngrok.com, create a free account, and download the appropriate version for your operating system, or:
+Go to ngrok.com, create a free account, and download the appropriate version for your operating system, or;
 
 Install ngrok via Apt with the following command in the terminal:
 ```bash

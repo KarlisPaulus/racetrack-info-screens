@@ -111,8 +111,8 @@ If you want the application to be accessible from other devices (for example, to
 	&& sudo apt install ngrok
 ```
 
-    Authenticate ngrok:
-    Open a terminal, then run:
+Authenticate ngrok:
+Open a terminal, then run:
 ```bash
 ngrok authtoken YOUR_AUTHTOKEN
 ```

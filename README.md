@@ -121,7 +121,7 @@ Replace YOUR_AUTHTOKEN with the authtoken provided in your ngrok dashboard.
 Start the tunnel:
 Assuming your application runs on port 3000, execute:
 ```bash
-ngrok http 3000
+ngrok http http://localhost:3000
 ```
 Use the public URL:
 ngrok will display a public URL (e.g., https://abcd1234.ngrok.io). Use this URL on any device to access your locally running Racetrack application.

@@ -184,7 +184,33 @@ socket.on('activeRace', (race) => {
         // Initialize last press times for each driver
         race.drivers.forEach(driver => {
             const carNum = driver.carAssigned.replace('Car ', '');
-            lastPressTimes[carNum] = null;
+            
+            // Restore last press time based on the last recorded lap's createdAt timestamp
+            if (driver.LapTimes && driver.LapTimes.length > 0) {
+                driver.LapTimes.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); // Sort by createdAt
+                const lastLap = driver.LapTimes[driver.LapTimes.length - 1];
+                lastPressTimes[carNum] = new Date(lastLap.createdAt).getTime();
+            } else {
+                lastPressTimes[carNum] = null;
+            }
+
+            // Render existing lap times
+            if (driver.LapTimes && driver.LapTimes.length > 0) {
+                const bestLap = Math.min(...driver.LapTimes.map(lap => lap.lapTime));
+                const formattedBest = formatLapTime(bestLap);
+
+                const lastLap = driver.LapTimes[driver.LapTimes.length - 1];
+                const formattedLast = formatLapTime(lastLap.lapTime);
+
+                const lapButton = document.getElementById(driver.carAssigned);
+                if (lapButton) {
+                    lapButton.dataset.bestLap = bestLap;
+                    lapButton.dataset.lapCount = driver.LapTimes.length;
+
+                    const timeDisplay = lapButton.myTimeDisplay;
+                    timeDisplay.textContent = `${driver.carAssigned} last lap: ${formattedLast} | Best lap: ${formattedBest}`;
+                }
+            }
         });
     }
 });

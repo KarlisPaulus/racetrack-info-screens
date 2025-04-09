@@ -1,1 +1,5 @@
 .DS_Store
+.vscode/
+node_modules/
+Racetrack.session.sql
+db/database.sqlite

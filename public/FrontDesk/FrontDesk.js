@@ -430,7 +430,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch("/api/races", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: raceName, drivers: [] }),
+                body: JSON.stringify({ name: raceName }),
             });
             if (!response.ok) throw new Error("Failed to create race.");
             raceForm.reset(); // Clear the form

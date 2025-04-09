@@ -11,6 +11,7 @@ const session = require('express-session');  // <-- ADDED from SECONDARY
 const raceRoutes = require('./routes/routes');
 const path = require('path');
 const { clearInterval } = require('timers');  // For timer functions
+const { initDB, RaceStatus } = require('../db/database');
 
 // Race status default values
 const initialTime = process.env.TIMER_DURATION;
@@ -186,11 +187,76 @@ app.get('/api/races/active', (req, res) => {
 });
 
 //---------------------------------------------------
-// 8) Race/timer logic & Socket.IO events (from MAIN FILE)
+// 8) Load and Save Race Status
+//---------------------------------------------------
+
+// Load race status on server start
+const loadRaceStatus = async () => {
+  const status = await RaceStatus.findOne();
+  if (status) {
+    raceStatus = {
+      running: status.running,
+      mode: status.mode,
+      remainingTime: status.remainingTime,
+      timerDuration: status.timerDuration,
+    };
+
+    // Automatically resume timer if race is running and time is left
+    if (raceStatus.running && raceStatus.remainingTime > 0) {
+      startCountdown();
+    }
+
+    // Reload the active race and emit it to clients
+    startedRace = await raceController.getActiveRace();
+    if (startedRace) {
+      io.emit("activeRace", startedRace);
+    }
+
+  } else {
+    // Initialize default race status
+    await RaceStatus.create(raceStatus);
+  }
+};
+
+// Save race status whenever it changes
+const saveRaceStatus = async () => {
+  const status = await RaceStatus.findOne();
+  if (status) {
+    status.running = raceStatus.running;
+    status.mode = raceStatus.mode;
+    status.remainingTime = raceStatus.remainingTime;
+    status.timerDuration = raceStatus.timerDuration;
+    await status.save();
+  }
+};
+
+// Function to start the countdown timer
+const startCountdown = () => {
+  if (timerInterval) clearInterval(timerInterval); // Clear any existing timer
+
+  timerInterval = setInterval(async () => {
+    raceStatus.remainingTime--;
+    io.emit("timerUpdate", raceStatus.remainingTime);
+
+    // Save the updated race status
+    await saveRaceStatus();
+
+    if (raceStatus.remainingTime <= 0) {
+      clearInterval(timerInterval); // Stop timer
+      raceStatus = { running: true, mode: "Finished", timerDuration: initialTime, timerInterval: null };
+      io.emit("raceUpdate", raceStatus); // Send real-time race update
+
+      await saveRaceStatus();
+    }
+  }, 1000);
+};
+
+//---------------------------------------------------
+// 9) Race/timer logic & Socket.IO events (from MAIN FILE)
 //---------------------------------------------------
 
 // Socket.IO connection
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log('A user connected:', socket.id);
 
   // Send a test message
@@ -199,10 +265,16 @@ io.on('connection', (socket) => {
   // Send initial race status
   socket.emit("raceUpdate", raceStatus);
 
+  // Emit the active race with lap times
+  startedRace = await raceController.getActiveRace();
   socket.emit("activeRace", startedRace);
 
+  if (raceStatus.running && raceStatus.remainingTime > 0) {
+    socket.emit("timerUpdate", raceStatus.remainingTime);
+  }
+
   // Handle race start event
-  socket.on("start", () => {
+  socket.on("start", async () => {
     if (!raceStatus.running) {
       raceStatus = {
         running: true,
@@ -211,22 +283,16 @@ io.on('connection', (socket) => {
         timerDuration: initialTime
       };
 
-      // Start countdown
-      timerInterval = setInterval(() => {
-        raceStatus.remainingTime--;
-        io.emit("timerUpdate", raceStatus.remainingTime);
+      // Save race status
+      await saveRaceStatus();
 
-        if (raceStatus.remainingTime <= 0) {
-          clearInterval(timerInterval); // Stop timer
-          raceStatus = {running: true, mode: "Finished", timerDuration: initialTime, timerInterval: null};
-          io.emit("raceUpdate", raceStatus);  // Send real-time race update
-        }
-      }, 1000);
+      // Start countdown
+      startCountdown();
 
       io.emit("raceUpdate", raceStatus);
 
-    	 // Mark the current race as active
-    	  startedRace = raceController.startRace();
+    	// Mark the current race as active
+    	startedRace = await raceController.startRace();
 
     	// Broadcast the active race
         if (startedRace) {
@@ -234,22 +300,24 @@ io.on('connection', (socket) => {
         }
 
         // Inform clients that the race session has started
-        io.emit("racesList", raceController.getRaces());
+        io.emit("racesList", await raceController.getRaces());
   	}
   });
 
   // Real-time race mode changes
-  socket.on("setRaceMode", (mode) => {
+  socket.on("setRaceMode", async (mode) => {
     raceStatus.mode = mode;
     if (mode === "Finished") {
       clearInterval(timerInterval);
       timerInterval = null;
     }
     io.emit("raceUpdate", raceStatus);
+
+    await saveRaceStatus();
   });
 
   // Handle race end
-  socket.on("endRace", () => {
+  socket.on("endRace", async () => {
     if (timerInterval) {
       clearInterval(timerInterval);
       timerInterval = null;
@@ -262,23 +330,21 @@ io.on('connection', (socket) => {
     };
 
     // Get the active race, delete it if any
-    const activeRace = raceController.getActiveRace();
+    const activeRace = await raceController.getActiveRace();
     if (activeRace) {
       const raceId = activeRace.id;
-      raceController.deleteRace(
-        { params: { id: raceId } },
-        {
-          status: (code) => ({
-            json: (data) => console.log(data)
-          })
-        }
-      );
+      const result = await raceController.deleteRace(raceId);
+      console.log(result.message);
+    } else {
+      console.error("No active race found to delete.")
     }
-
+    
     startedRace = null;
 
     // Emit the updated race status
     io.emit("raceUpdate", raceStatus);
+
+    await saveRaceStatus();
   });
 
   socket.on('disconnect', () => {
@@ -299,58 +365,37 @@ io.on('connection', (socket) => {
   });
 
 	// Listen for requests to get the list of races
-    socket.on('getRaces', () => {
-        const races = require('./controllers/raceController').getRaces();
-        socket.emit('racesList', races);
-    });
+  socket.on('getRaces', async () => {
+      const races = await raceController.getRaces();
+      socket.emit('racesList', races);
+  });
 
-	socket.on('saveLapTime', (lapData) => {
-		console.log('Received lap:', {
-			car: lapData.carNumber,
-			count: lapData.lapCount,
-			type: typeof lapData.lapCount
-		});
-		
-		// Convert carNumber to number
-		const carNumber = typeof lapData.carNumber === 'string' ? 
-			parseInt(lapData.carNumber.replace('Car ', '')) : 
-			lapData.carNumber;
-	
-		const race = raceController.getActiveRace();
-		if (race) {
-			const driver = race.drivers.find(d => {
-				const driverCarNum = parseInt(d.carAssigned.replace('Car ', ''));
-				return driverCarNum === carNumber;
-			});
-			
-			if (driver) {
-				if (!driver.lapTimes) driver.lapTimes = [];
-				driver.lapTimes.push({
-					lapTime: lapData.lapTime,
-					formattedLap: lapData.formattedLap,
-					bestLap: lapData.bestLap,
-					formattedBest: lapData.formattedBest,
-					lapCount: Number(lapData.lapCount) // Ensure stored as number
-				});
-				
-				// Emit updates
-				io.emit('lapTimeUpdate', {
-					carNumber: carNumber,
-					lapTime: lapData.lapTime,
-					lapCount: Number(lapData.lapCount), // Ensure number
-					bestLap: lapData.bestLap,
-					formattedLap: lapData.formattedLap,
-					formattedBest: lapData.formattedBest
-				});
-			}
-		}
-	});
+	socket.on('saveLapTime', async (lapData) => {
+    try {
+        // Call the saveLapTime function from raceController
+        const result = await raceController.saveLapTime({
+            params: { id: lapData.raceId }, // Pass the race ID as a parameter
+            body: lapData // Pass the lap data as the request body
+        }, {
+            status: (code) => ({
+                json: (data) => console.log(`Response [${code}]:`, data)
+            })
+        });
+    } catch (error) {
+        console.error('Error saving lap time:', error);
+    }
+  });
 });
 
 //---------------------------------------------------
-// 9) Start the server
+// 10) Start the server
 //---------------------------------------------------
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+(async () => {
+  await initDB(); // Initialize the database
+  await loadRaceStatus(); // Load race status from the database
+
+  const PORT = process.env.PORT || 3000;
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+})();

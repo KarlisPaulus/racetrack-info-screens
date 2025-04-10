@@ -259,6 +259,8 @@ const startCountdown = () => {
 io.on('connection', async (socket) => {
   console.log('A user connected:', socket.id);
 
+  io.emit("racesList", await raceController.getRaces());
+
   // Send a test message
   socket.emit('message', 'Welcome to Beachside Racetrack!');
 

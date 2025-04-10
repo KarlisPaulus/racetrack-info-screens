@@ -16,7 +16,7 @@ const { initDB, RaceStatus } = require('../db/database');
 // Race status default values
 const initialTime = process.env.TIMER_DURATION;
 let timerInterval = null;
-let raceStatus = {running: false, mode: "Danger", remainingTime: 0, timerDuration: initialTime};
+let raceStatus = { running: false, mode: "Danger", remainingTime: 0, timerDuration: initialTime };
 let startedRace = null;
 
 // Load environment variables
@@ -38,20 +38,18 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-
 //---------------------------------------------------
 // 3) Session middleware & body parsing
 //---------------------------------------------------
-// (ADDED from SECONDARY FILE)
 app.use(session({
   secret: process.env.SESSION_SECRET || 'defaultSessionSecret',
   resave: false,
   saveUninitialized: false,
 }));
 
-// Parse URL-encoded bodies (for login form) - ADDED
+// Parse URL-encoded bodies (for login form)
 app.use(express.urlencoded({ extended: true }));
-// We already parse JSON in the main file, keep it:
+// Parse JSON bodies
 app.use(express.json());
 
 //---------------------------------------------------
@@ -61,23 +59,47 @@ const raceController = require('./controllers/raceController');
 raceController.setIO(io);
 
 //---------------------------------------------------
-// 5) Serve static files
+// 5) Define Authentication and Role Middleware
 //---------------------------------------------------
-// Main public folder
+// General authentication middleware
+function requireAuth(req, res, next) {
+  if (req.session && req.session.authenticated) {
+    return next();
+  } else {
+    return res.redirect('/');
+  }
+}
+
+// Role-based middleware: only allow access if user has the correct role
+function requireRole(role) {
+  return function(req, res, next) {
+    if (req.session && req.session.authenticated && req.session.role === role) {
+      return next();
+    } else {
+      return res.redirect('/');
+    }
+  }
+}
+
+//---------------------------------------------------
+// 6) Serve static files and login page
+//---------------------------------------------------
+// Serve the main public folder (unprotected)
 app.use(express.static(path.join(__dirname, '/../public')));
-//Direct to the login page
+
+// Direct to the login page at the root
 app.get('/', (req, res) => {
-  // Adjust the path to match where your login.html is actually located
-  res.sendFile(path.join(__dirname, '../public/Login_Page/login.html'));
+  res.sendFile(path.join(__dirname, '/../public/Login_Page/login.html'));
 });
-// Keep existing FrontDesk static serving:
-app.use('/FrontDesk', express.static(path.join(__dirname, '/../public/FrontDesk')));
+
+// Protect the FrontDesk static files with role-based middleware (assuming FrontDesk is for receptionists)
+app.use('/FrontDesk', requireRole('receptionist'), express.static(path.join(__dirname, '/../public/FrontDesk')));
 
 //---------------------------------------------------
-// 6) Login things from SECONDARY FILE
+// 7) Login routes
 //---------------------------------------------------
 
-// a) Serve login.html at the root ("/")
+// a) Serve login.html at the root (redundant with the above GET, can be removed if desired)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/Login_Page/login.html'));
 });
@@ -111,48 +133,29 @@ app.post('/login', (req, res) => {
   }
 });
 
-// c) Auth middleware (optional usage)
-function requireAuth(req, res, next) {
-  if (req.session && req.session.authenticated) {
-    return next();
-  } else {
-    // Redirect to the login page if not authenticated
-    return res.redirect('/');
-  }
-}
-
 //---------------------------------------------------
-// 7) Existing routes from MAIN FILE
+// 8) Protected routes (GET)
 //---------------------------------------------------
 
-// If you want to protect these pages behind login, wrap them with `requireAuth`.
-// For example: 
-// app.get('/front-desk', requireAuth, (req, res) => { ... })
-
-
-
-//---------------------------------------------------
-// PROTECTED ROUTES
-//---------------------------------------------------
-// Serve FrontDesk.html
-app.get('/front-desk', requireAuth, (req, res) => {
+// Only receptionists can access the FrontDesk page
+app.get('/front-desk', requireRole('receptionist'), (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/FrontDesk/FrontDesk.html'));
 });
 
-// Serve RaceControl.html
-app.get('/race-control', requireAuth, (req, res) => {
+// Only safety users can access the RaceControl page
+app.get('/race-control', requireRole('safety'), (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/raceControl/raceControl.html'));
 });
 
-// Serve lap-line-tracker.html
-app.get('/lap-line-tracker', requireAuth, (req, res) => {
+// Only observers can access the lap-line-tracker page
+app.get('/lap-line-tracker', requireRole('observer'), (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/lap-line-tracker/lap-line-tracker.html'));
 });
 
+//---------------------------------------------------
+// 9) Public routes (GET)
+//---------------------------------------------------
 
-//---------------------------------------------------
-// PUBLIC ROUTES
-//---------------------------------------------------
 // Serve NextRace.html
 app.get('/next-race', (req, res) => {
   res.sendFile(path.join(__dirname, '/../public/NextRace/NextRace.html'));
@@ -173,7 +176,7 @@ app.use("/api", raceRoutes);
 
 // Serve leader-board.html
 app.get('/leader-board', (req, res) => {
-    res.sendFile(path.join(__dirname, '/../public/Leaderboard/leader-board.html'));
+  res.sendFile(path.join(__dirname, '/../public/Leaderboard/leader-board.html'));
 });
 
 // Fetch active race ID
@@ -187,7 +190,7 @@ app.get('/api/races/active', (req, res) => {
 });
 
 //---------------------------------------------------
-// 8) Load and Save Race Status
+// 10) Load and Save Race Status
 //---------------------------------------------------
 
 // Load race status on server start
@@ -252,7 +255,7 @@ const startCountdown = () => {
 };
 
 //---------------------------------------------------
-// 9) Race/timer logic & Socket.IO events (from MAIN FILE)
+// 11) Race/timer logic & Socket.IO events
 //---------------------------------------------------
 
 // Socket.IO connection
@@ -296,10 +299,10 @@ io.on('connection', async (socket) => {
     	// Mark the current race as active
     	startedRace = await raceController.startRace();
 
-    	// Broadcast the active race
-        if (startedRace) {
-            io.emit("activeRace", startedRace); // Send the active race to all clients
-        }
+      // Broadcast the active race
+      if (startedRace) {
+        io.emit("activeRace", startedRace);
+      }
 
         // Inform clients that the race session has started
         io.emit("racesList", await raceController.getRaces());
@@ -342,8 +345,6 @@ io.on('connection', async (socket) => {
     }
     
     startedRace = null;
-
-    // Emit the updated race status
     io.emit("raceUpdate", raceStatus);
 
     await saveRaceStatus();
@@ -390,7 +391,7 @@ io.on('connection', async (socket) => {
 });
 
 //---------------------------------------------------
-// 10) Start the server
+// 12) Start the server
 //---------------------------------------------------
 (async () => {
   await initDB(); // Initialize the database

@@ -294,3 +294,68 @@ button[type="button"]:hover {
     background-image: url('/assets/exitFullscreen.png');
     display: none;
 }
+
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+    /* Single column layout for mobile */
+    .main-container {
+        flex-direction: column;
+        width: 95%;
+        gap: 10px;
+        margin: 10px auto;
+    }
+
+    /* Full-width sections */
+    section {
+        width: 100%;
+        margin: 0;
+        padding: 15px;
+        height: auto;
+        min-height: unset;
+    }
+
+    /* Larger touch targets */
+    button {
+        padding: 12px 20px;
+        font-size: 16px;
+        min-height: 44px; /* Minimum touch target size */
+    }
+
+    /* Better list item spacing */
+    #race-list li {
+        padding: 12px;
+        margin-bottom: 8px;
+    }
+
+    /* Adjust modal sizing */
+    .modal-content {
+        width: 90%;
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    /* Prevent zooming on input focus */
+    input {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    /* Stack buttons vertically in forms */
+    form button {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    /* Adjust mode toggle buttons */
+    .mode-toggle-button, 
+    .fullscreen-toggle-button {
+        width: 40px;
+        height: 40px;
+        top: 10px;
+        right: 10px;
+    }
+
+    .fullscreen-toggle-button {
+        top: 60px;
+    }
+}

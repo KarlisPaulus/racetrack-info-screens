@@ -90,16 +90,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 raceData[carNumber] = {
                     name: driver.name,
                     carAssigned: driver.carAssigned,
-                    laps: driver.lapTimes?.length || 0,
+                    laps: driver.LapTimes?.length || 0,
                     lastLap: null,
                     bestLap: null,
                     currentLap: 0
                 };
                 
-                if (driver.lapTimes?.length > 0) {
-                    const lastLap = driver.lapTimes[driver.lapTimes.length - 1];
+                if (driver.LapTimes?.length > 0) {
+                    driver.LapTimes.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));  // Sort laptimes by creation date
+                    const lastLap = driver.LapTimes[driver.LapTimes.length - 1];
                     raceData[carNumber].lastLap = lastLap.lapTime;
-                    raceData[carNumber].bestLap = Math.min(...driver.lapTimes.map(l => l.lapTime));
+                    raceData[carNumber].bestLap = Math.min(...driver.LapTimes.map(l => l.lapTime));
                 }
                 
                 currentLapStartTimes[carNumber] = Date.now();

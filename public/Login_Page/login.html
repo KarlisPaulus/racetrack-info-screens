@@ -14,7 +14,9 @@
   </div>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
+    const socket = io('http://localhost:3000', {
+  transports: ['websocket'] // force WebSocket only
+});
   </script>
   <!-- Make sure your login.js appends the login container to the wrapper -->
   <script src="/Login_Page/login.js"></script>

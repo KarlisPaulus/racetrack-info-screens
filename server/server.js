@@ -36,7 +36,9 @@ for (const envVar of requiredEnvVars) {
 //---------------------------------------------------
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = require('socket.io')(server, {
+  transports: ['websocket'] // enforce WebSocket
+});
 
 //---------------------------------------------------
 // 3) Session middleware & body parsing
@@ -262,7 +264,7 @@ const startCountdown = () => {
 io.on('connection', async (socket) => {
   console.log('A user connected:', socket.id);
 
-  io.emit("racesList", await raceController.getRaces());
+  socket.emit("racesList", await raceController.getRaces());
 
   // Send a test message
   socket.emit('message', 'Welcome to Beachside Racetrack!');

@@ -1,5 +1,7 @@
 // Initialize real-time connection
-const socket = io();
+const socket = io('http://localhost:3000', {
+  transports: ['websocket'] // force WebSocket only
+});
 
 const fullscreenButton = document.getElementById('fullscreenButton');
 const exitFullscreenButton = document.getElementById('exitFullscreenButton');

@@ -85,7 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedRaceId = null; // Track the selected race for various actions
 	let selectedDriverName = null; // Track the selected driver for editing
 
-    const socket = io();
+    const socket = io('http://localhost:3000', {
+  transports: ['websocket'] // force WebSocket only
+});
 
 	// Initialization
 	fetchRaces();

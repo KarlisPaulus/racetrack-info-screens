@@ -50,7 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 	
-    const socket = io();
+    const socket = io('http://localhost:3000', {
+  transports: ['websocket'] // force WebSocket only
+});
     const leaderboardBody = document.getElementById("leaderboard-body");
     const timerDisplay = document.querySelector(".timer-display");
     const flagDisplay = document.querySelector(".flag-display");

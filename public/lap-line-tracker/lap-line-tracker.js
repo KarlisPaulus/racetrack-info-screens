@@ -221,7 +221,7 @@ socket.on('activeRace', (race) => {
 socket.on('raceUpdate', (data) => {
     console.log('Race state update:', data.mode, 'Running:', data.running);
     
-    if (data.mode === "Finished" || !data.running) {
+    if (data.mode === "Danger" && !data.running) {
         // Disable all buttons and change their appearance
         const buttons = document.querySelectorAll('.carButton');
         buttons.forEach(button => {

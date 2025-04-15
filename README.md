@@ -24,6 +24,7 @@ A **real-time race control system** that allows:
 - Role-based access (Receptionist/Safety/Observer)
 - Mobile-friendly interfaces
 - Live race timer & race mode control
+- Race data storing in SQLite database.
 
 ## How does it work?
 ### 1. Authentication

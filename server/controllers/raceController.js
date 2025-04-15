@@ -119,8 +119,8 @@ exports.updateRace = async (req, res) => {
     if (name) {
       race.name = name;
     }
-    
-    if (drivers) {
+
+    if (drivers && Array.isArray(drivers)) {
       if (drivers.length > 8) {
         return res.status(400).json({ message: "A race session can have a maximum of 8 drivers." });
       }
@@ -131,14 +131,39 @@ exports.updateRace = async (req, res) => {
         return res.status(400).json({ message: "Driver names must be unique within the race." });
       }
 
-      race.drivers = drivers;
+      // Process driver updates and deletions
+      for (const driverUpdate of drivers) {
+        const { id: driverId, name: newName, carAssigned, action } = driverUpdate;
+
+        if (action === "update") {
+          // Update driver information
+          const driver = race.drivers.find(d => d.id === driverId);
+          if (!driver) {
+            return res.status(404).json({ message: `Driver with ID ${driverId} not found.` });
+          }
+
+          if (newName) driver.name = newName;
+          if (carAssigned) driver.carAssigned = carAssigned;
+          await driver.save();
+        } else if (action === "delete") {
+          // Delete the driver
+          const driver = race.drivers.find(d => d.id === driverId);
+          if (!driver) {
+            return res.status(404).json({ message: `Driver with ID ${driverId} not found.` });
+          }
+          await driver.destroy();
+        }
+      }
     }
 
     await race.save();
 
+    // Fetch the updated race with drivers
+    const updatedRace = await Race.findByPk(id, { include: { model: Driver, as: 'drivers' } });
+
     // Emit the updated race to all clients
     if (io) {
-      io.emit('raceUpdated', race);
+      io.emit('raceUpdated', updatedRace);
     }
 
     res.status(200).json(race);
@@ -149,12 +174,13 @@ exports.updateRace = async (req, res) => {
 }; 
 
 // Request to delete a race
-exports.deleteRace = async (raceId) => {
+exports.deleteRace = async (reqOrId, res) => {
+  const id = typeof reqOrId === "object" && reqOrId.params ? reqOrId.params.id : reqOrId;
 
   try {
-  const race = await Race.findByPk(raceId);
+  const race = await Race.findByPk(id);
   if (!race) {
-    return { success: false, message: "Race not found." };
+    return res.status(404).json({ success: false, message: "Race not found." });
   }
 
   await race.destroy(); // Remove the race from the array
@@ -166,10 +192,18 @@ exports.deleteRace = async (raceId) => {
   }
 
 	// Send a success response back to the client if race is deleted
-  return { success: true, message: "Race deleted successfully." };
+  if (res) {
+    res.status(200).json({ success: true, message: "Race deleted successfully." });
+  } else {
+    return { success: true, message: "Race deleted successfully." };
+}
   } catch (error) {
     console.error(error);
-    return { success: false, message: "Internal server error." };
+    if (res) {
+      return res.status(500).json({ success: false, message: "Internal server error." });
+  } else {
+      return { success: false, message: "Internal server error." };
+  }
   }
 };
 

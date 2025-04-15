@@ -101,6 +101,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     socket.on('raceUpdated', (race) => {
         console.log("Race updated:", race);
+        // Update the local races array
+        const raceIndex = races.findIndex(r => r.id === race.id);
+        if (raceIndex !== -1) {
+        races[raceIndex] = race; // Replace the old race with the updated one
+    }
 		if (selectedRaceId === race.id) {
 			showRaceDetails(race.id); // Refresh the Race Details section
 		}
@@ -240,12 +245,18 @@ document.addEventListener("DOMContentLoaded", () => {
 		try {
 			const race = races.find(r => r.id === selectedRaceId);
 			if (!race) throw new Error("Race not found.");
-			race.drivers = race.drivers.filter(d => d.name !== selectedDriverName);
+			const driver = race.drivers.find(d => d.name === selectedDriverName);
+            if (!driver) throw new Error("Driver not found.");
+
+            const driverUpdate = {
+                id: driver.id,
+                action: "delete",
+            };
 	
 			const response = await fetch(`/api/races/${selectedRaceId}`, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(race),
+				body: JSON.stringify({ drivers: [driverUpdate] }),
 			});
 	
 			if (!response.ok) throw new Error("Failed to remove driver.");
@@ -344,14 +355,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 
 			console.log("Driver created and car assigned successfully:", data);
-
-			// Update the local races array
-			const race = races.find(r => r.id === selectedRaceId);
-			if (race) {
-				race.drivers.push({ name: driverName, carAssigned: `Car ${carId}` });
-			}
-
-			showRaceDetails(selectedRaceId); // Refresh the race details
 			closeModals();
 		} catch (error) {
 			console.error("Error creating driver and assigning car:", error);
@@ -380,14 +383,17 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	
 		try {
-			const driver = race.drivers.find(d => d.name === selectedDriverName);
-			driver.name = newDriverName;
-			driver.carAssigned = `Car ${newCarId}`;
+			const driverUpdate = {
+                id: race.drivers.find(d => d.name === selectedDriverName).id, // Find the driver's ID
+                name: newDriverName,
+                carAssigned: `Car ${newCarId}`,
+                action: "update",
+            };
 	
 			const response = await fetch(`/api/races/${selectedRaceId}`, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(race),
+				body: JSON.stringify({drivers: [driverUpdate]}),
 			});
 	
 			if (!response.ok) throw new Error("Failed to update driver.");

@@ -373,9 +373,19 @@ document.addEventListener("DOMContentLoaded", () => {
 			alert("Invalid car ID. Please enter a valid number.");
 			return;
 		}
+
+		// Get the current race
+		const race = races.find(r => r.id === selectedRaceId);
+		if (!race) return;
+
+		// Check if new driver name already exists
+		const nameExists = race.drivers.some(d => d.name === newDriverName && d.name !== selectedDriverName);
+		if (nameExists) {
+			alert(`Driver ${newDriverName} already exists in this race.`);
+			return;
+		}
 	
 		// Check if car ID is already in use
-		const race = races.find(r => r.id === selectedRaceId);
 		const carExists = race.drivers.some(d => d.carAssigned === `Car ${newCarId}` && d.name !== selectedDriverName);
 		if (carExists) {
 			alert(`Car ${newCarId} is already assigned to another driver.`);

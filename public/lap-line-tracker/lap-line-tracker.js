@@ -259,5 +259,30 @@ socket.on('raceUpdate', (data) => {
     }
 });
 
+socket.on('lapTimeUpdate', (data) => {// listen for lap time updates from the server(in case any other devices are using the time tracker)
+    const { carNumber, lapTime, lapCount, bestLap, formattedLap, formattedBest } = data;
+    const carId = `Car ${carNumber}`;
+    const button = document.getElementById(carId);
+
+    // Reset the internal last press time for this car
+    lastPressTimes[carNumber] = Date.now();
+
+    if (button) {
+        // Reassign display if needed
+        if (!button.myTimeDisplay) {
+            const row = button.parentElement;
+            const timeDisplay = row.querySelector('.carTimeDisplay');
+            button.myTimeDisplay = timeDisplay;
+        }
+
+        // Update button metadata
+        button.dataset.bestLap = bestLap;
+        button.dataset.lapCount = lapCount;
+
+        // Update the time display text
+        button.myTimeDisplay.textContent = `${carId} last lap: ${formattedLap} | Best lap: ${formattedBest}`;
+    }
+});
+
 document.body.appendChild(darkModeButton);
 document.body.appendChild(lightModeButton);

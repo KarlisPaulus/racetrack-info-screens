@@ -4,7 +4,7 @@ let lastPressTimes = {}; // Track the time of the last button press of cars
 let currentRace = null;
 
 // Initialize Socket.IO connection
-const socket = io('http://localhost:3000', {
+const socket = io(window.location.origin, {
   transports: ['websocket'] // force WebSocket only
 });
 

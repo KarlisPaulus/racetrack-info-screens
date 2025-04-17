@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 	
-    const socket = io('http://localhost:3000', {
+    const socket = io(window.location.origin, {
   transports: ['websocket'] // force WebSocket only
 });
     const leaderboardBody = document.getElementById("leaderboard-body");

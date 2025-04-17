@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextRaceDrivers = document.getElementById("next-race-drivers");
     const paddockMessage = document.getElementById("paddock-message");
 
-    const socket = io('http://localhost:3000', {
+    const socket = io(window.location.origin, {
   transports: ['websocket'] // force WebSocket only
 });
 

@@ -1,5 +1,5 @@
 // Initialize real-time connection
-const socket = io('http://localhost:3000', {
+const socket = io(window.location.origin, {
   transports: ['websocket'] // force WebSocket only
 });
 

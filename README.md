@@ -61,12 +61,12 @@ Open a shell/terminal in your computer.
 
 Use following command:
 ```bash
-git clone https://gitea.kood.tech/egertyakopoom/racetrack.git
+git clone https://github.com/KarlisPaulus/racetrack-info-screens.git
 ```
 
 Next, move to the project folder:
 ```bash
-$ cd racetrack
+$ cd racetrack-info-screens
 ```
 
 Next, install dependencies:
@@ -74,7 +74,7 @@ Next, install dependencies:
 $ npm install
 ```
 
-Next, Construct .env file + Set Up Environment Variables
+Next, If you want to change the access keys or port number, edit the .env file in the root of the project:
 ```bash
 # .env
 RECEPTIONIST_KEY=8ded6076
@@ -135,30 +135,33 @@ ngrok will display a public URL (e.g., https://2819-90-191-130-150.ngrok-free.ap
 3. Enter the access key.
 4. If the key is incorrect, you will see an error message and need to try again.
 ### Front Desk
-* Create a New Race
-	1. In the "Upcoming Races" section, Enter a race name (e.g., "Grand Prix") in the text box.
-	2. Click "Add Race".
-* Add Drivers to the Race
-	1. Select a race from the list by clicking on it. → Race details appear on the right.
-	2. Click "Add Driver".
-	3. In the pop-up:
-		* Driver Name: (e.g., "Bob")
-		* Car ID: (e.g., "5" for "Car 5")
-	4. Click "Add Driver".
-* Edit Race Details
-	* Change Race Name
-		1. Select the race.
-		2. Click "Change Race Name".
-		3. Enter the new name (e.g., "Ultra Grand Prix").
-		4. Click "Save".
-	* Edit/Remove Drivers
-		1. In the Race Details section:
-			* Edit: Click the "Edit" button next to a driver → Update name/Car ID → "Save".
-			* Remove: Click "Remove" → Confirm deletion.
-* Delete a Race
-	1. Select the race to delete.
-	2. Click "Delete Race".
-	3. Confirm by clicking "Yes, Delete".
+
+**Create a New Race**
+ 1. In the "Upcoming Races" section, Enter a race name (e.g., "Grand Prix") in the text box.
+ 2. Click "Add Race".
+
+**Add Drivers to the Race**
+ 1. Select a race from the list by clicking on it. → Race details appear on the right.
+ 2. Click "Add Driver".
+ 3. In the pop-up:
+	* Driver Name: (e.g., "Bob")
+	* Car ID: (e.g., "5" for "Car 5")
+ 4. Click "Add Driver".
+
+**Edit Race Details**
+* **Change Race Name**
+ 1. Select the race.
+ 2. Click "Change Race Name".
+ 3. Enter the new name (e.g., "Ultra Grand Prix").
+ 4. Click "Save".
+* **Edit/Remove Drivers**
+ - Edit: Click the "Edit" button next to a driver → Update name/Car ID → "Save".
+ - Remove: Click "Remove" → Confirm deletion.
+
+**Delete a Race**
+1. Select the race to delete.
+2. Click "Delete Race".
+3. Confirm by clicking "Yes, Delete".
 
 ### Race Controller
 * Start a race with the button "Start race".
